@@ -1,0 +1,31 @@
+<li *ngIf="itemDetails" class="list-group-item bg-grey border-top border-secondary py-1 px-2">
+  <div class="relative" (click)="selItem()">
+    <div class="row my-1">
+      <h5 class="card-title col-8 my-1">{{ itemDetails.name}}
+        <img class="comboImg" *ngIf="itemDetails.combo === 'Primer'" src="../assets/primer.png">
+        <img class="comboImg" *ngIf="itemDetails.combo === 'Detonator'" src="../assets/detonator.png">
+      </h5>
+      <h5 class="card-title col-4 my-1 text-right">{{slotName}}</h5>
+    </div>
+    <div class="row my-1">
+      <div class="col-6 px-3 inscText" *ngFor="let i of itemDetails.inscs">
+        <img src="{{i.png}}" /> {{ i.value }}% {{ i.type }} {{ i.stat === '(blank)' ? '' : i.stat }}
+      </div>
+    </div>
+  </div>
+  <div *ngIf="itemDetails.buff" class="row m-1">
+    <div class="btn-group btn-group-toggle btn-block" placement="bottom" [ngbTooltip]="itemDetails.special">
+      <label class="btn btn-block text-left buff-button border-secondary" ngbButtonLabel>
+        <input (click)="toggleActive()" type="checkbox" ngbButton [ngModel]="itemDetails.bactive">
+        <div class="row">
+          <div class="col-6 px-2"><b>{{itemDetails.buff}}</b></div>
+          <div class="col-6 px-3 inscText" *ngFor="let i of itemDetails.buffDetails">
+            <img src="{{i.png}}" />
+            <span [ngClass]="itemDetails.bactive ? 'null' : 'strikethrough'">
+              {{ i.value }}% {{ i.type }} {{ i.stat === '(blank)' ? '' : i.stat }}</span>
+          </div>
+        </div>
+      </label>
+    </div>
+  </div>
+</li>

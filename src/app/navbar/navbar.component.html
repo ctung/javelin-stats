@@ -1,0 +1,129 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-img py-1">
+    <a class="navbar-brand" href="#">
+        <h3>Javelin-Stats</h3>
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
+        (click)="toggleNavbar()" aria-controls="navbarSupportedContent" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNavDropdown" [class.show]="navbarOpen">
+        <ul class="nav navbar-nav">
+            <li class="nav-item">
+                <a class="nav-link text-light" target="_blank"
+                    href="https://vulkk.com/2019/05/24/anthem-javelin-stats-and-builds-tool-overview/">Guide</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link text-light" (click)="openModal(math)">Math</a>
+            </li>
+
+        </ul>
+        <ul class="nav navbar-nav ml-auto">
+            <button
+            class="btn btn-outline-secondary text-light btn-margin"
+            *ngIf="!auth.isAuthenticated()"
+            (click)="auth.login()">
+              Log In
+          </button>
+    
+          <button
+            class="btn btn-outline-secondary text-light btn-margin"
+            *ngIf="auth.isAuthenticated()"
+            (click)="auth.logout()">
+              Log Out
+          </button>
+        </ul>
+    </div>
+</nav>
+
+<ng-template #math let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Anthem Math</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>
+            The following is taken from <a
+                href="https://github.com/algorithmic-freelancers/docs/blob/DaraDadachanji-patch-2/guide/mechanics/damageFormula.md">The
+                Algorithmic Freelancers guide</a>
+        </p>
+        <h5>Weapon Damage</h5>
+        <p>
+            The basic damage formula is shown <a
+                href="https://algorithmic-freelancers.github.io/docs/guide/mechanics/damageFormula">here.</a>
+        </p>
+        <h5>Melee Damage</h5>
+        <p>
+            Melee damage scales the javelin base melee damage by the gearscore, using the following formula: <br>
+            <code>GearScale = 2 ^ ((round(gearscore / 11) -1) / 10)</code><br>
+            Then inscription bonuses, buffs and debuffs are applied the same a weapons above.
+        </p>
+        <h5>Proc Damage</h5>
+        <p>
+            The base proc is first scaled with the melee GearScale equation shown above. <br>
+            <code>GearScale = 2 ^ ((round(gearscore / 11) -1) / 10)</code><br>
+            When calculating the sum of the bonus damage modifiers, Elemental, Fire, Ice and Elec count 2x their normal
+            amount. For example the damage modifier for the Thunderbolt of Yvenia proc would be:<br>
+            <code>ProcSumDmgModifier = JavDmgMod + (2 * ElementalDmgMod) + (2 * ElecDmgMod)</code><br>
+        </p>
+
+        <h5>Summing Damage Modifiers</h5>
+        <p> All damage in the game has a SuperType, a Type, and my optionally be classified as Blast (AOE)
+        </p>
+        <table class="table table-striped table-sm">
+            <thead>
+                <tr>
+                    <th>SuperType</th>
+                    <th>Type</th>
+                    <th>Blast</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td rowspan="2">Physical</td>
+                    <td>Acid</td>
+                    <td>Yes/No</td>
+                </tr>
+                <tr>
+                    <td>Kinetic</td>
+                    <td>Yes/No</td>
+                </tr>
+                <tr>
+                    <td rowspan="3">Elemental</td>
+                    <td>Elec</td>
+                    <td>Yes/No</td>
+                </tr>
+                <tr>
+                    <td>Fire</td>
+                    <td>Yes/No</td>
+                </tr>
+                <tr>
+                    <td>Ice</td>
+                    <td>Yes/No</td>
+                </tr>
+            </tbody>
+        </table>
+        For example, an Ice based attack would receive bonus damage from:
+        <ul>
+            <li>% (All Jav) Damage</li>
+            <li>% Elemental Damage</li>
+            <li>% Ice Damage</li>
+            <li>% Gear/Weap Damage (as appropriate)</li>
+            <li>% Ability1/Ability2 Damage (as appropriate)</li>
+            <li>% Weapon-Specific Damage (as appropriate)</li>
+        </ul>
+        <h5>Simplifications made by this site</h5>
+        In an attempt to reduce complexity, javelin-stats does not factor in the following damage multipliers:
+        <ul>
+            <li>% Source Crit multipliers (eg Blastback has a 2.4x crit mutliplier)</li>
+            <li>% Target Crit multipliers (eg Monitor head has a 4x weak point multiplier)</li>
+            <li>% Type specific multiplier (eg Ice on a Frost Brute)</li>
+        </ul>
+        So all damage calculated on this site, is intended to reflect non-weak-point hit on red-health-bar enemies
+    </div>
+
+
+</ng-template>

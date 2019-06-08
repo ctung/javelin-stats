@@ -1,0 +1,23 @@
+.inscText {
+    font-size: 14px;
+}
+
+.comboImg {
+    width: 20px;
+    height: 20px;
+}
+
+.buff-button {
+    background-color: lightpink !important;
+}
+.buff-button.active {
+    background-color: #ABEBC6 !important;
+}
+
+.strikethrough {
+    text-decoration: line-through;
+}
+
+.bg-grey {
+    background-color: #e0e0e0;
+}

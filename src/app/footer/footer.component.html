@@ -1,0 +1,69 @@
+
+<nav class="navbar navbar-expand-md navbar-dark bg-secondary py-1">
+  <ul class="navbar-nav mx-auto">
+    <li class="nav-item text-center">
+      <a class="nav-link px-3" (click)="openModal(contact)">Contact</a>
+    </li>
+    <li class="nav-item text-center">
+      <a class="nav-link px-3" (click)="openModal(ack)">Acknowledgements</a>
+    </li>
+    <li class="nav-item text-center">
+        <a class="nav-link px-3" routerLink="privacy">Privacy</a>
+      </li>
+  </ul>
+</nav>
+
+<ng-template #contact let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title">Contact</h4>
+    <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>
+      Send bug reports or feedback to <a href="mailto:admin@javelin-stats.com">admin@javelin-stats.com</a>
+    </p>
+    <p>
+      I can also be reached at /u/kyngston on reddit or Kyngston#4859 on Discord.
+    </p>
+    <p>
+      If you are submitting a bug for incorrect damage calculations, please include a link to your build, and a
+      photo or video
+      of the damage number shown on screen. Be sure that the damage numbers are non-weak-point hits on
+      red-health-bar mobs. Thanks!
+    </p>
+  </div>
+</ng-template>
+
+<ng-template #ack let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title">Acknowledgements</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <p>
+            This web app builds upon the painstaking work done by others to reverse engineer the game mechanics,
+            equations, and datamine the stats.
+        </p>
+        Credit goes to:
+        <ul>
+            <li>
+                <a href="https://algorithmic-freelancers.github.io/docs/">The Algorithmic Freelancers</a> for providing
+                the damage calculation equations
+            </li>
+            <li>
+                <a href="http://bsn.boards.net/thread/17495/guide-anthem-combat-technical-manual">The BSN Anthem Combat
+                    Technical Manual</a> for providing more damage calculation equations
+            </li>
+            <li>
+                <a href="http://anthemarchive.com">The Anthem Archive</a> for providing base values to seed my database
+            </li>
+            <li>
+                /u/Obiehatestakennames for updating the item database to match the latest Anthem Archive data.
+            </li>
+        </ul>
+    </div>
+</ng-template>

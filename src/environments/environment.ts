@@ -3,7 +3,10 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  base_href: 'localhost:4200/',
+  rest_api: 'http://localhost:80/rest/public/rest/api',
+  callback_url: 'http://localhost:4200/callback'
 };
 
 /*

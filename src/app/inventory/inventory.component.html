@@ -1,0 +1,10 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-warning my-3 py-1 rounded border border-secondary">
+  <a class="navbar-brand font-weight-bold">Inventory:</a>
+  <div class="navbar-nav">
+    <a id="weap" class="nav-item nav-link" [class.active]="type==='weap'" (click)="selInv('weap')">Weapons</a>
+    <a id="gear" class="nav-item nav-link" [class.active]="type==='gear'" (click)="selInv('gear')">Gear</a>
+    <a id="comp" class="nav-item nav-link" [class.active]="type==='comp'" (click)="selInv('comp')">Components</a>
+    <a id="supp" class="nav-item nav-link" [class.active]="type==='supp'" (click)="selInv('supp')">Support</a>
+  </div>
+</nav>
+<app-inventory-list [type]="type"></app-inventory-list>

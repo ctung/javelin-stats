@@ -1,0 +1,21 @@
+.loadoutName {
+    height:26px;
+}
+
+.buff-button {
+    color: black !important;
+    background-color: lightpink !important;
+    font-weight: 450;
+}
+
+.buff-button.active {
+    background-color: #ABEBC6 !important;
+}
+
+.bg-grey {
+    background-color: #e0e0e0;
+}
+
+.dark-yellow {
+    background-color: #E3B04C;
+}

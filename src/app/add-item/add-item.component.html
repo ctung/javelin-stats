@@ -1,0 +1,32 @@
+<form>
+  <div class="modal-header py-1 border-secondary">
+    <h3 class="modal-title">{{mode}} {{ typeLongName }}</h3>
+    <button type="button" class="close" aria-label="Close" (click)="activeModal.dismiss('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body py-1">
+    <div class="row py-0 justify-content-center">
+      <div class="col-12 col-md-8 form-group py-1 px-4">
+        <!--<l-select2 [data]="items" [options]="itemOptions" (valueChange)="changeItem($event)"></l-select2>-->
+      </div>
+    </div>
+    <div *ngFor="let i of inscRange" class="row py-0 justify-content-center">
+      <div class="col-12 col-md-9">
+        <div class="input-group mb-3 mx-auto">
+          <div class="input-group-prepend">
+            <span class="input-group-text val-css" (click)="toggleScope(i)"><img src="{{scopes[i].img}}"/></span>
+          </div>
+          <input name="{{'val' + i}}" class="ival" [(ngModel)]="item.i[i][2]" type="number"  placeholder=" Value">
+          <div class="input-group-append">
+          <!--<l-select2 [data]="inscs[i]" [options]="inscOptions" (valueChange)="changeInsc($event,i)"></l-select2>-->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal-footer py-1 border-secondary">
+    <button type="button" class="btn btn-primary m-2" (click)="addItem()">Submit</button>
+    <button type="button" class="btn btn-secondary m-2" (click)="activeModal.close('Close click')">Close</button>
+  </div>
+</form>

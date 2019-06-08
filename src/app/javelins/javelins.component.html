@@ -1,0 +1,90 @@
+<div *ngIf="javelins['colossus']">
+    <div class="container">
+        <div class="row py-3">
+            <div class="col-sm-12 col-md-2" id="sticky-sidebar">
+                <div class="sticky-top text-center">
+                    <div class="row">
+                        <div *ngFor="let class of ['colossus','interceptor','ranger','storm']"
+                            class="col-6 col-md-12">
+                            <div class="btn-group-vertical btn-block my-1 text-center" role="group">
+                                <a class="btn btn-warning border-secondary">
+                                    <h5 class="my-0">{{class | titlecase}}</h5>
+                                </a>
+                                <button *ngFor="let i of [1,2,3]" tabindex="-1" type="button" class="btn font-medium"
+                                    [class.btn-outline-secondary]="class != jav.value?.class || i != jav.value?.slot"
+                                    [class.btn-secondary]="class === jav.value?.class && i === jav.value?.slot"
+                                    (click)="onSelect(class,i)">{{javelins[class][i].name}}</button>
+                            </div>
+                        </div>
+                    
+                    <div class="col-6 col-md-12 py-1">
+                        <button class="btn btn-warning btn-block border-secondary font-weight-bold" tabindex="-1"
+                            (click)="addItem('weap')">Add Weapon</button>
+                    </div>
+                    <div class="col-6 col-md-12 py-1">
+                        <button class="btn btn-warning btn-block border-secondary font-weight-bold" tabindex="-1"
+                            (click)="addItem('gear')">Add Gear</button>
+                    </div>
+                    <div class="col-6 col-md-12 py-1">
+                        <button class="btn btn-warning btn-block border-secondary font-weight-bold" tabindex="-1"
+                            (click)="addItem('comp')">Add Comp</button>
+                    </div>
+                    <div class="col-6 col-md-12 py-1">
+                        <button class="btn btn-warning btn-block border-secondary font-weight-bold" tabindex="-1"
+                            (click)="addItem('supp')">Add Support</button>
+                    </div>
+                    <div class="col-6 col-md-12 py-1">
+                        <button class="btn btn-warning btn-block border-secondary font-weight-bold" tabindex="-1"
+                            (click)="getLink(linkModal)">Build
+                            Link</button>
+                    </div>
+                    <div class="col-6 col-md-12 py-1">
+                        <button class="btn btn-warning btn-block border-secondary font-weight-bold" tabindex="-1"
+                            (click)="toggleInventory()">Inventory</button>
+                    </div>
+                    <div *ngIf="jav.value" class="col-6 col-md-12 py-1">
+                        <button class="btn btn-danger btn-block border-secondary font-weight-bold text-dark" tabindex="-1"
+                            (click)="resetJav(resetJavModal)">Reset Javelin</button>
+                    </div>
+</div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-10" *ngIf="!inventory">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6" id="main">
+                        <app-equipped [jav]="jav"></app-equipped>
+                    </div>
+                    <div class="col-sm-12 col-md-6" id="stats">
+                        <app-stats [jav]="jav"></app-stats>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-10" *ngIf="inventory">
+                <app-inventory></app-inventory>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<ng-template #linkModal let-modal>
+    <div class="modal-header">
+        <h3 class="modal-title">Link Copied to Paste Buffer</h3>
+    </div>
+    <div class="modal-body">
+        <a href="{{url}}">{{url}}</a>
+    </div>
+</ng-template>
+
+<ng-template #resetJavModal let-modal>
+    <div class="Modal-header">
+        <h3 class="modal-title px-3">Reset Javelin Slot</h3>
+    </div>
+    <div class="modal-body">
+        Delete Saved Javelin Slot?
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)=resetJavConfirm(jav.value)>Confirm</button>
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Close click')">Cancel</button>
+    </div>
+</ng-template>

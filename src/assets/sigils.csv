@@ -1,0 +1,59 @@
+id,name,class,rarity,base,scope0,type0,stat0,value0,scope1,type1,stat1,value1
+0,Acid Sigil Epic,universal,Epic,Acid Sigil,jav,Acid,Damage,30,jav,Acid,Resist,30
+1,A-Rifle Sigil Epic,universal,Epic,A-Rifle Sigil,jav,A-Rifle,Damage,30,jav,A-Rifle,Ammo,30
+2,Armor Sigil Epic,universal,Epic,Armor Sigil,jav,Armor,Max,30,jav,Physical,Resist,10
+3,Autocannon Sigil Epic,universal,Epic,Autocannon Sigil,jav,Autocannon,Damage,30,jav,Autocannon,Ammo,30
+4,Combo Sigil Epic,universal,Epic,Combo Sigil,jav,Combo,Damage,30,,,,
+5,Fire Sigil Epic,universal,Epic,Fire Sigil,jav,Fire,Damage,30,jav,Fire,Resist,30
+6,Gear Sigil Epic,universal,Epic,Gear Sigil,jav,Gear,Recharge,30,,,,
+7,GenLauncher Sigil Epic,universal,Epic,GenLauncher Sigil,jav,GrenLaun,Damage,30,jav,GrenLaun,Ammo,30
+8,Heat Sigil Epic,universal,Epic,Heat Sigil,jav,Thruster,Life,30,,,,
+9,Hvy Pistol Sigil Epic,universal,Epic,Hvy Pistol Sigil,jav,Hvy Pistol,Damage,30,jav,Hvy Pistol,Ammo,30
+10,Ice Sigil Epic,universal,Epic,Ice Sigil,jav,Ice,Damage,30,jav,Ice,Resist,30
+11,Lightning Sigil Epic,universal,Epic,Lightning Sigil,jav,Elec,Damage,30,jav,Elec,Resist,30
+12,LMG Epic,universal,Epic,LMG,jav,LMG,Damage,30,jav,LMG,Ammo,30
+13,Mch Pistol Sigil Epic,universal,Epic,Mch Pistol Sigil,jav,Mch Pistol,Damage,30,jav,Mch Pistol,Ammo,30
+14,Melee Sigil Epic,universal,Epic,Melee Sigil,jav,Melee,Damage,30,,,,
+15,Mks Rifle Sigil Epic,universal,Epic,Mks Rifle Sigil,jav,Mks Rifle,Damage,30,jav,Mks Rifle,Ammo,30
+16,Shield Sigil Epic,universal,Epic,Shield Sigil,jav,Shield,Max,30,jav,Shield,Delay,-30
+17,Shotgun Sigil Epic,universal,Epic,Shotgun Sigil,jav,Shotgun,Damage,30,jav,Shotgun,Ammo,30
+18,Sniper Sigil Epic,universal,Epic,Sniper Sigil,jav,Sniper,Damage,30,jav,Sniper,Ammo,30
+19,Ultimate Sigil Epic,universal,Epic,Ultimate Sigil,jav,Ultimate,Damage,30,,,,
+20,Acid Sigil Rare,universal,Rare,Acid Sigil,jav,Acid,Damage,20,jav,Acid,Resist,20
+21,A-Rifle Sigil Rare,universal,Rare,A-Rifle Sigil,jav,A-Rifle,Damage,20,jav,A-Rifle,Ammo,20
+22,Autocannon Sigil Rare,universal,Rare,Autocannon Sigil,jav,Autocannon,Damage,20,jav,Autocannon,Ammo,20
+23,Combo Sigil Rare,universal,Rare,Combo Sigil,jav,Combo,Damage,20,,,,
+24,Fire Sigil Rare,universal,Rare,Fire Sigil,jav,Fire,Damage,20,jav,Fire,Resist,20
+25,Gear Sigil Rare,universal,Rare,Gear Sigil,jav,Gear,Recharge,20,,,,
+26,GenLauncher Sigil Rare,universal,Rare,GenLauncher Sigil,jav,GrenLaun,Damage,20,jav,GrenLaun,Ammo,20
+27,Heat Sigil Rare,universal,Rare,Heat Sigil,jav,Thruster,Life,20,,,,
+28,Hvy Pistol Sigil Rare,universal,Rare,Hvy Pistol Sigil,jav,Hvy Pistol,Damage,20,jav,Hvy Pistol,Ammo,20
+29,Ice Sigil Rare,universal,Rare,Ice Sigil,jav,Ice,Damage,20,jav,Ice,Resist,20
+30,Lightning Sigil Rare,universal,Rare,Lightning Sigil,jav,Elec,Damage,20,jav,Elec,Resist,20
+31,LMG Rare,universal,Rare,LMG,jav,LMG,Damage,20,jav,LMG,Ammo,20
+32,Mch Pistol Sigil Rare,universal,Rare,Mch Pistol Sigil,jav,Mch Pistol,Damage,20,jav,Mch Pistol,Ammo,20
+33,Melee Sigil Rare,universal,Rare,Melee Sigil,jav,Melee,Damage,20,,,,
+34,Mks Rifle Sigil Rare,universal,Rare,Mks Rifle Sigil,jav,Mks Rifle,Damage,20,jav,Mks Rifle,Ammo,20
+35,Shield Sigil Rare,universal,Rare,Shield Sigil,jav,Shield,Max,20,jav,Shield,Delay,-20
+36,Shotgun Sigil Rare,universal,Rare,Shotgun Sigil,jav,Shotgun,Damage,20,jav,Shotgun,Ammo,20
+37,Sniper Sigil Rare,universal,Rare,Sniper Sigil,jav,Sniper,Damage,20,jav,Sniper,Ammo,20
+38,Ultimate Sigil Rare,universal,Rare,Ultimate Sigil,jav,Ultimate,Damage,20,,,,
+39,Acid Sigil Common,universal,Common,Acid Sigil,jav,Acid,Damage,10,jav,Acid,Resist,10
+40,A-Rifle Sigil Common,universal,Common,A-Rifle Sigil,jav,A-Rifle,Damage,10,jav,A-Rifle,Ammo,10
+41,Autocannon Sigil Common,universal,Common,Autocannon Sigil,jav,Autocannon,Damage,10,jav,Autocannon,Ammo,10
+42,Combo Sigil Common,universal,Common,Combo Sigil,jav,Combo,Damage,10,,,,
+43,Fire Sigil Common,universal,Common,Fire Sigil,jav,Fire,Damage,10,jav,Fire,Resist,10
+44,Gear Sigil Common,universal,Common,Gear Sigil,jav,Gear,Recharge,10,,,,
+45,GenLauncher Sigil Common,universal,Common,GenLauncher Sigil,jav,GrenLaun,Damage,10,jav,GrenLaun,Ammo,10
+46,Heat Sigil Common,universal,Common,Heat Sigil,jav,Thruster,Life,10,,,,
+47,Hvy Pistol Sigil Common,universal,Common,Hvy Pistol Sigil,jav,Hvy Pistol,Damage,10,jav,Hvy Pistol,Ammo,10
+48,Ice Sigil Common,universal,Common,Ice Sigil,jav,Ice,Damage,10,jav,Ice,Resist,10
+49,Lightning Sigil Common,universal,Common,Lightning Sigil,jav,Elec,Damage,10,jav,Elec,Resist,10
+50,LMG Common,universal,Common,LMG,jav,LMG,Damage,10,jav,LMG,Ammo,10
+51,Mch Pistol Sigil Common,universal,Common,Mch Pistol Sigil,jav,Mch Pistol,Damage,10,jav,Mch Pistol,Ammo,10
+52,Melee Sigil Common,universal,Common,Melee Sigil,jav,Melee,Damage,10,,,,
+53,Mks Rifle Sigil Common,universal,Common,Mks Rifle Sigil,jav,Mks Rifle,Damage,10,jav,Mks Rifle,Ammo,10
+54,Shield Sigil Common,universal,Common,Shield Sigil,jav,Shield,Max,10,jav,Shield,Delay,-10
+55,Shotgun Sigil Common,universal,Common,Shotgun Sigil,jav,Shotgun,Damage,10,jav,Shotgun,Ammo,10
+56,Sniper Sigil Common,universal,Common,Sniper Sigil,jav,Sniper,Damage,10,jav,Sniper,Ammo,10
+57,Ultimate Sigil Common,universal,Common,Ultimate Sigil,jav,Ultimate,Damage,10,,,,

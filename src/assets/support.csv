@@ -1,0 +1,17 @@
+﻿id,name,class,power,rarity,damage,recharge,duration,bscope0,btype0,bstat0,bvalue0,bscope1,btype1,bstat1,bvalue1,special,buff,description
+0,Battle Cry (38),colossus,38,Epic,,29,,,,,,,,,,,,
+1,Shield Pulse (38),colossus,38,Epic,,45,,,,,,,,,,,,
+2,Rally Cry (38),interceptor,38,Epic,,59,,,,,,,,,,,,
+3,Target Beacon (38),interceptor,38,Epic,,29,15,,,,,,,,,,,
+4,Bulwark Point (38),ranger,38,Epic,3394,59,20,,,,,,,,,,,
+5,Muster Point (38),ranger,38,Epic,,59,10,,,,,,,,,,,"Deploys a field that augments allies inside, increasing gun damage by 20%"
+6,Quickening Field (38),storm,38,Epic,,72,10,,,,,,,,,,,"Zone of power bestows Hasted effect to all inside, increasing gear recharge rate by 20%."
+7,Wind Wall (38),storm,38,Epic,3394,29,20,,,,,,,,,,,
+8,Anthem's Grace (61),storm,61,Masterwork,,72,10,jav,Gear,Damage,20,,,,,Additionally increases gear damage by 20%,Anthem's Grace,
+9,Howling Veil (61),storm,61,Masterwork,23885,29,20,,,,,,,,,,,
+10,Tarsis' Last Stand (61),ranger,61,Masterwork,,59,10,,Damage,(blank),20,,,,,,Muster Point,
+11,Vanguard's Rampart (61),ranger,61,Masterwork,23885,59,20,jav,Ability 2,Charges,200,,,,,,Bulwark Point,
+12,Berserker's Cry (61),colossus,61,Masterwork,,29,10,,,,,,,,,,Battle Cry,
+13,Surging Shield,colossus,61,Masterwork,,45,10,,,,,,,,,,Shield Pulse,
+14,Slayer's Furor,interceptor,61,Masterwork,,29,15,,,,,,,,,,,
+15,Voice of Courage,interceptor,61,Masterwork,,59,,,,,,,,,,,,

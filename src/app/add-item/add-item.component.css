@@ -1,0 +1,12 @@
+.modal-body, .modal-footer{
+    background-color: lightgrey;
+}
+
+.modal-header {
+    background-color: #E3B04C;
+}
+
+.ival {
+    width: 65px;
+    padding-left: 10px !important;
+}
