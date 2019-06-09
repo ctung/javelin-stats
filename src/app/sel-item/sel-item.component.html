@@ -15,11 +15,11 @@
 </div>
 
 <ng-template #rt let-r="result" let-t="term">
-  <h5>
+  <h6>
     <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
-  </h5>
+  </h6>
   <div class="row">
-    <div *ngFor="let i of r.inscs" class="col-6 px-3 inscText">
+    <div *ngFor="let i of r.inscs" class="col-6 px-3 small">
       <img *ngIf="i.scope" src="../../assets/jav.png">
       <img *ngIf="!i.scope" src="../../assets/gear.png">
       {{i.value}}% {{i.type}} {{i.stat}}
