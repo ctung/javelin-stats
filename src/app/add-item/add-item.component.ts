@@ -3,8 +3,10 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ItemService } from '../services/item.service';
 import { DatabaseService } from '../services/database.service';
 import { CompactItem, Item } from '../classes/item';
-import { take } from 'rxjs/operators';
+import { take, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { JavelinService } from '../services/javelin.service';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-add-item',
@@ -18,16 +20,14 @@ export class AddItemComponent implements OnInit {
   item: CompactItem;
   itemDetails: Item;
   scopes: any[];
-  inscOptions = {
-    placeholder: 'Inscription',
-    theme: 'bootstrap',
-    width: '220px'
-  };
-  itemOptions = { placeholder: 'Select Item' };
   inscRange: number[];
   longNames = { weap: 'Weapon', gear: 'Gear', comp: 'Component', supp: 'Support', sigils: 'Sigils' };
   mode: string;
   inscs: any[];
+
+  itemModel: any;
+  inscModel: any[];
+  inscVals: number[];
 
   constructor(
     private itemService: ItemService,
@@ -42,6 +42,8 @@ export class AddItemComponent implements OnInit {
       { id: 1, img: '../assets/jav.png' },
       { id: 1, img: '../assets/jav.png' }
     ];
+    this.inscModel = [null, null, null, null];
+    this.inscVals = [null, null, null, null];
   }
 
   ngOnInit() {
@@ -49,16 +51,12 @@ export class AddItemComponent implements OnInit {
     this.items = this.db.itemDb[this.type]
       .sort((a, b) => (a.name > b.name) ? 1 : -1)
       .map((e: Item) => { e.text = e.name; return e; });
-    this.items.unshift({ id: '', text: '', search: '', hidden: true });
 
-    this.inscs = [];
-    [0, 1, 2, 3].forEach(j => {
-      this.inscs[j] = this.db.inscDb
-        .filter(i => i.deprecated !== true)
-        .map(i => ({ id: i.id, text: i.type + ' ' + i.stat.replace('(blank)', '') }))
-        .sort((a, b) => (a.text > b.text) ? 1 : -1);
-      this.inscs[j].unshift({ id: '', text: '', search: '', hidden: true });
-    });
+    this.inscs = this.db.inscDb
+      .filter(i => i.deprecated !== true)
+      .map(i => ({ id: i.id, text: i.type + ' ' + i.stat.replace('(blank)', '') }))
+      .sort((a, b) => (a.text > b.text) ? 1 : -1);
+
 
     if (this.type === 'comp') {
       this.inscRange = [0, 1];
@@ -67,67 +65,71 @@ export class AddItemComponent implements OnInit {
     }
 
     // initialize item and inscription pulldowns
-    this.item = { idx: -1, id: -1, i: [] };
+    this.item = { idx: -1, id: null, i: [] };
     this.inscRange.forEach(() => {
       this.item.i.push([]);
     });
-
-    // unselect everything if we're adding an item
-    if (this.itemDetails == null) {
-      this.items.forEach((i: any) => delete i.selected);
-      this.item.id = this.items[0].id;
-      this.inscRange.forEach(i => {
-        this.inscs[i].forEach(e => delete e.selected);
-      });
-    }
 
     // initialize all the fields if we're doing an edit
     if (this.itemDetails) {
       this.mode = 'Edit';
       this.item.idx = this.itemDetails.idx;
-      this.items.forEach((i: any) => {
-        if (i.id === this.itemDetails.id) { i.selected = 'selected'; }
-        this.item.id = this.itemDetails.id;
-      });
+      this.itemModel = Object.assign({}, this.itemDetails);
+
       for (let i = 0; i < this.itemDetails.inscs.length; i++) {
         const insc = this.itemDetails.inscs[i];
+        console.log(insc);
         this.setScope(i, insc.scope);
-        this.inscs[i].forEach(s => {
-          if (s.id === insc.id) { s.selected = 'selected'; }
-        });
-        this.item.i[i] = [insc.id, insc.scope, insc.value];
+        this.inscModel[i] = { id: insc.id, text: insc.type + ' ' + insc.stat.replace('(blank)', '') };
+        this.inscVals[i] = insc.value;
       }
     }
 
   }
 
+  searchItem = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => term.length < 2 ? []
+        : this.items.filter(v => v.text.toLowerCase().indexOf(term.toLowerCase()) > -1)
+      )
+    )
+
+
+  searchInscs = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      distinctUntilChanged(),
+      map(term => this.inscs.filter(v => v.text.toLowerCase().indexOf(term.toLowerCase()) > -1)
+      )
+    )
+
+    public formatter = (x: { text: string }) => x.text;
+
   toggleScope(i: number) {
     this.scopes[i].id = (this.scopes[i].id) ? 0 : 1;
     this.scopes[i].img = (this.scopes[i].id === 0) ? '../assets/gear.png' : '../assets/jav.png';
-    this.item.i[i][1] = this.scopes[i].id;
   }
   setScope(i: number, scope: number) {
     this.scopes[i].id = scope;
     this.scopes[i].img = (this.scopes[i].id === 0) ? '../assets/gear.png' : '../assets/jav.png';
-    this.item.i[i][1] = this.scopes[i].id;
   }
 
   addItem() {
+    console.log(this.item);
+    this.item.id = this.itemModel.id;
     const newInscs = [];
-    this.item.i.forEach(i => { if (i.length > 0) { newInscs.push(i); } });
+    this.inscRange.forEach(i => {
+      if (this.inscModel[i] !== null && this.inscVals[i] != null) {
+        newInscs.push([this.inscModel[i].id, this.scopes[i].id, this.inscVals[i]]);
+      }
+    });
     this.item.i = newInscs;
+    console.log(this.item);
     this.itemService.add(this.type, this.item).pipe(take(1))
       .subscribe(d => this.javelinService.updateJavItems(this.type, d));
-    this.activeModal.close();
-  }
-
-  changeInsc(evt: any, slot: number) {
-    this.item.i[slot][0] = +evt.id;
-    this.item.i[slot][1] = this.scopes[slot].id;
-  }
-
-  changeItem(evt: any) {
-    this.item.id = +evt.id;
+    // this.activeModal.close();
   }
 
 }

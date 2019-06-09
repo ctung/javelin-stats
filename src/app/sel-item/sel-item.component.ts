@@ -18,7 +18,6 @@ export class SelItemComponent implements OnInit {
   slot: number;  // item slot number
   jav: BehaviorSubject<CompactJavelin>;
   typeLongName: string;
-  model: any;
 
   @ViewChild('instance') instance: NgbTypeahead;
   focus$ = new Subject<string>();
