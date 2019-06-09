@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ItemService } from '../services/item.service';
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
 import { JavelinService } from '../services/javelin.service';
-import { Inscription } from '../classes/inscription';
 import { Item } from '../classes/item';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, merge } from 'rxjs';
+import { debounceTime, map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { CompactJavelin } from '../classes/javelin';
 
 
@@ -18,10 +18,14 @@ export class SelItemComponent implements OnInit {
   slot: number;  // item slot number
   jav: BehaviorSubject<CompactJavelin>;
   typeLongName: string;
+  model: any;
+
+  @ViewChild('instance') instance: NgbTypeahead;
+  focus$ = new Subject<string>();
+  click$ = new Subject<string>();
 
   items: any[];
-  itemOptions: any;
-  longNames = { 'weap': 'Weapon', 'gear': 'Gear', 'comp': 'Component', 'supp': 'Support', 'sigils': 'Sigils' };
+  longNames = { weap: 'Weapon', gear: 'Gear', comp: 'Component', supp: 'Support', sigils: 'Sigils' };
 
   constructor(
     private itemService: ItemService,
@@ -32,48 +36,35 @@ export class SelItemComponent implements OnInit {
   ngOnInit() {
     if (this.type === 'sigils') {
       this.items = [
-        { id: '', text: '', selected: 'selected', search: '', hidden: true, inscs: [] },
         { id: -1, name: 'Empty', inscs: [] },
-          ...this.itemService.getSigils()
+        ...this.itemService.getSigils()
       ];
-      console.log(this.items);
     } else {
       this.itemService.getSavedItems(this.type, this.jav.value.class, this.slot).subscribe(i => {
         this.items = [
-          { id: '', text: '', selected: 'selected', search: '', hidden: true, inscs: [] },
           { id: -1, name: 'Empty', inscs: [] },
           ...i
         ];
       });
     }
-
     this.typeLongName = this.longNames[this.type];
-
-    this.itemOptions = {
-      placeholder: 'Select ' + this.typeLongName,
-      escapeMarkup: function (markup: string) { return markup; },
-      templateResult: (item: Item) => this.itemTemplate(item),
-      templateSelection: function (item: Item) { return item.name; }
-    };
   }
 
-  public itemTemplate(item: any): string {
-    if ('disabled' in item && item.disabled === true) { return ''; }
-    let s = `<h5>${item.name}</h5><div class="row">`;
-    item.inscs.forEach((i: Inscription) => {
-      if (i.value != null && i.type != null) {
-        s += `<div class="col-6 px-3 inscText">`;
-        s += `<img src='../../assets/${(i.scope ? 'jav' : 'gear')}.png' />`;
-        s += ` ${i.value || ''}% ${i.type || ''} ${i.stat || ''}</div>`;
-      }
-    });
-    s += `</div>`;
-    return s;
+  public search = (text$: Observable<string>) => {
+    const debouncedText$ = text$.pipe(debounceTime(200), distinctUntilChanged());
+    const clicksWithClosedPopup$ = this.click$.pipe(filter(() => !this.instance.isPopupOpen()));
+    const inputFocus$ = this.focus$;
+
+    return merge(debouncedText$, inputFocus$, clicksWithClosedPopup$).pipe(
+      map(term => term === '' ? this.items
+        : this.items.filter(v => v.name.toLowerCase().indexOf(term.toLowerCase()) > -1))
+    );
   }
+
+  public formatter = (x: { name: string }) => x.name;
 
   public changeItem(evt: Item) {
     evt.id = +evt.id;
-    // console.log([evt, this.slot]);
     this.javelinService.updateItem(this.jav, this.type, this.slot, evt);
     this.activeModal.close();
   }

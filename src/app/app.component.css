@@ -1,7 +1,14 @@
 .image{
     height: 100%;
     width: 100%;
-    background-size:cover;
     background-image:url('../assets/Anthem_Texture_Topo_Grey.png');
-    background-position:50% 50%;
-  }
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+    z-index: 99;
+}

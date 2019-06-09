@@ -25,7 +25,7 @@ export class AddItemComponent implements OnInit {
   };
   itemOptions = { placeholder: 'Select Item' };
   inscRange: number[];
-  longNames = { 'weap': 'Weapon', 'gear': 'Gear', 'comp': 'Component', 'supp': 'Support', 'sigils': 'Sigils' };
+  longNames = { weap: 'Weapon', gear: 'Gear', comp: 'Component', supp: 'Support', sigils: 'Sigils' };
   mode: string;
   inscs: any[];
 

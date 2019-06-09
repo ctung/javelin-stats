@@ -5,6 +5,7 @@ import { CompactJavelin } from '../classes/javelin';
 import { BehaviorSubject } from 'rxjs';
 import { JavelinService } from '../services/javelin.service';
 
+
 @Component({
   selector: 'app-item',
   templateUrl: './item.component.html',
