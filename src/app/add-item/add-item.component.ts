@@ -48,6 +48,7 @@ export class AddItemComponent implements OnInit {
 
   ngOnInit() {
     this.typeLongName = this.longNames[this.type];
+
     this.items = this.db.itemDb[this.type]
       .sort((a, b) => (a.name > b.name) ? 1 : -1)
       .map((e: Item) => { e.text = e.name; return e; });
@@ -105,19 +106,19 @@ export class AddItemComponent implements OnInit {
       )
     )
 
-    public formatter = (x: { text: string }) => x.text;
+  public formatter = (x: { text: string }) => x.text;
 
-  toggleScope(i: number) {
-    this.scopes[i].id = (this.scopes[i].id) ? 0 : 1;
-    this.scopes[i].img = (this.scopes[i].id === 0) ? '../assets/gear.png' : '../assets/jav.png';
-  }
+
   setScope(i: number, scope: number) {
     this.scopes[i].id = scope;
     this.scopes[i].img = (this.scopes[i].id === 0) ? '../assets/gear.png' : '../assets/jav.png';
   }
+  toggleScope(i: number) {
+    this.setScope(i, this.scopes[i].id ? 0 : 1);
+  }
+
 
   addItem() {
-    console.log(this.item);
     this.item.id = this.itemModel.id;
     const newInscs = [];
     this.inscRange.forEach(i => {
@@ -126,7 +127,6 @@ export class AddItemComponent implements OnInit {
       }
     });
     this.item.i = newInscs;
-    console.log(this.item);
     this.itemService.add(this.type, this.item).pipe(take(1))
       .subscribe(d => this.javelinService.updateJavItems(this.type, d));
     // this.activeModal.close();
