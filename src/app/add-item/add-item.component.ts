@@ -129,7 +129,7 @@ export class AddItemComponent implements OnInit {
     this.item.i = newInscs;
     this.itemService.add(this.type, this.item).pipe(take(1))
       .subscribe(d => this.javelinService.updateJavItems(this.type, d));
-    // this.activeModal.close();
+    this.activeModal.close();
   }
 
 }
