@@ -79,7 +79,7 @@ export class AddItemComponent implements OnInit {
 
       for (let i = 0; i < this.itemDetails.inscs.length; i++) {
         const insc = this.itemDetails.inscs[i];
-        console.log(insc);
+        // console.log(insc);
         this.setScope(i, insc.scope);
         this.inscModel[i] = { id: insc.id, text: insc.type + ' ' + insc.stat.replace('(blank)', '') };
         this.inscVals[i] = insc.value;
