@@ -8,7 +8,6 @@
   <input type="text" class="form-control" [ngbTypeahead]="search" [resultTemplate]="rt"
     (focus)="focus$.next($event.target.value)" (click)="click$.next($event.target.value)" [inputFormatter]="formatter"
     #instance="ngbTypeahead" (selectItem)="changeItem($event.item)" />
-  <!--<l-select2 [data]="items" [options]="itemOptions" (valueChange)="changeItem($event)"></l-select2>-->
 </div>
 <div>
   <h5 class="px-3">Use "Add {{ typeLongName }}" button to create inventory</h5>

@@ -4,13 +4,11 @@ import { Inscription } from '../classes/inscription';
 import { DatabaseService } from '../services/database.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
 
 @Injectable()
 export class ItemService {
   constructor(
-    private db: DatabaseService,
-    private http: HttpClient
+    private db: DatabaseService
   ) { }
 
   // convert a verbose item to compact form
@@ -127,11 +125,11 @@ export class ItemService {
 
   public initStats(): any {
     const stats = {
-      'jav': {},
-      'weap': [{}, {}],
-      'gear': [{}, {}],
-      'comp': [{}, {}, {}, {}, {}, {}],
-      'supp': [{}]
+      jav: {},
+      weap: [{}, {}],
+      gear: [{}, {}],
+      comp: [{}, {}, {}, {}, {}, {}],
+      supp: [{}]
     };
     this.db.inscDb.forEach(i => {
       this.initStat(stats.jav, i);

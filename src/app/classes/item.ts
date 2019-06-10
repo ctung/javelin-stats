@@ -38,6 +38,18 @@ export class Item {
     blast?: string;
     crit?: number;
     burst?: number;
+    dstype0?: string;
+    dtype0?: string;
+    dmg0?: number;
+    blast0?: string;
+    dstype1?: string;
+    dtype1?: string;
+    dmg1?: number;
+    blast1?: string;
+    procstype?: string;
+    proctype?: string;
+    procdmg?: number;
+    procblast?: string;
 
     // weapon
     rpm?: number;

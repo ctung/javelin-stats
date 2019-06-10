@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
@@ -6,14 +6,11 @@ import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './footer.component.html',
   styleUrls: ['./footer.component.css']
 })
-export class FooterComponent implements OnInit {
+export class FooterComponent {
 
   constructor(
     private modalService: NgbModal
   ) { }
-
-  ngOnInit() {
-  }
 
   openModal(content) {
     this.modalService.open(content, { size: 'lg' });

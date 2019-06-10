@@ -108,7 +108,6 @@ export class AddItemComponent implements OnInit {
 
   public formatter = (x: { text: string }) => x.text;
 
-
   setScope(i: number, scope: number) {
     this.scopes[i].id = scope;
     this.scopes[i].img = (this.scopes[i].id === 0) ? '../assets/gear.png' : '../assets/jav.png';
@@ -116,7 +115,6 @@ export class AddItemComponent implements OnInit {
   toggleScope(i: number) {
     this.setScope(i, this.scopes[i].id ? 0 : 1);
   }
-
 
   addItem() {
     this.item.id = this.itemModel.id;

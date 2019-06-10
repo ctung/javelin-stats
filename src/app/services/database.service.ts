@@ -17,43 +17,42 @@ import { environment } from 'src/environments/environment';
 })
 export class DatabaseService {
   public saved = new BehaviorSubject<any>({ weap: [], gear: [], comp: [], supp: [] });
-  public itemDb = { weap: weapons, gear: gear, comp: components, supp: support, sigils: sigils };
+  public itemDb = { weap: weapons, gear, comp: components, supp: support, sigils };
   public inscDb: Inscription[] = inscriptions;
   public baseValues: any;
   public isAuthenticated = false;
-
 
   constructor(
     private http: HttpClient
   ) {
     this.baseValues = {
-      'colossus': {
-        'mdmg': 170,
-        'mstype': 'Physical',
-        'mtype': 'Kinetic',
-        'armor': 600,
-        'shield': 200
+      colossus: {
+        mdmg: 170,
+        mstype: 'Physical',
+        mtype: 'Kinetic',
+        armor: 600,
+        shield: 200
       },
-      'interceptor': {
-        'mdmg': 25,
-        'mstype': 'Physical',
-        'mtype': 'Kinetic',
-        'armor': 600,
-        'shield': 200
+      interceptor: {
+        mdmg: 25,
+        mstype: 'Physical',
+        mtype: 'Kinetic',
+        armor: 600,
+        shield: 200
       },
-      'ranger': {
-        'mdmg': 100,
-        'mstype': 'Elemental',
-        'mtype': 'Elec',
-        'armor': 600,
-        'shield': 200
+      ranger: {
+        mdmg: 100,
+        mstype: 'Elemental',
+        mtype: 'Elec',
+        armor: 600,
+        shield: 200
       },
-      'storm': {
-        'mdmg': 150,
-        'mstype': 'Elemental',
-        'mtype': 'Fire',
-        'armor': 600,
-        'shield': 200
+      storm: {
+        mdmg: 150,
+        mstype: 'Elemental',
+        mtype: 'Fire',
+        armor: 600,
+        shield: 200
       }
     };
   }
@@ -61,17 +60,17 @@ export class DatabaseService {
   public addSave(type: string, cItem: CompactItem): Observable<CompactItem> {
     const newSaved = this.saved.value;
     if (this.isAuthenticated) {
-      return this.http.post(environment.rest_api + '/items', { type: type, item: cItem }).pipe(
-        map((data: CompactItem) => ({'idx': +data.idx, 'id': +data.id, 'i': data.i})),
+      return this.http.post(environment.rest_api + '/items', { type, item: cItem }).pipe(
+        map((data: CompactItem) => ({idx: +data.idx, id: +data.id, i: data.i})),
         tap((item: CompactItem) => this.updateDb(type, item))
         );
     } else {
-      if (cItem['idx'] >= 0) {
-        this.delSave(type, cItem['idx']);
+      if (cItem.idx >= 0) {
+        this.delSave(type, cItem.idx);
       } else {
         let max = 0;
         newSaved[type].forEach(i => { if (i.idx >= max) { max = i.idx + 1; } });
-        cItem['idx'] = max;
+        cItem.idx = max;
       }
       newSaved[type].push(cItem);
       this.saved.next(newSaved);
@@ -100,13 +99,12 @@ export class DatabaseService {
 
   private loadDb() {
     if (this.isAuthenticated) {
-      this.http.get(environment.rest_api + '/items').subscribe(
+      this.http.get<any>(environment.rest_api + '/items').subscribe(
         data => {
-          // console.log(data);
-          if (data['items'].length) {
-            const newValue = {'weap': [], 'gear': [], 'comp': [], 'supp': [] };
-            data['items'].forEach(i => {
-              newValue[i.type].push({'idx': i.idx, 'id': i.id, 'i': i.i });
+          if (data.items.length) {
+            const newValue = {weap: [], gear: [], comp: [], supp: [] };
+            data.items.forEach(i => {
+              newValue[i.type].push({idx: i.idx, id: i.id, i: i.i });
             });
             this.saved.next(newValue);
             localStorage.setItem('items', JSON.stringify(newValue));
@@ -117,7 +115,7 @@ export class DatabaseService {
             Object.keys(items).map(t => {
               items[t].forEach(i => {
                 streams.push(this.http.post(environment.rest_api + '/items', {
-                  'item': i, 'type': t, 'i': i.i, 'idx': null
+                  item: i, type: t, i: i.i, idx: null
                 }));
               });
             });
@@ -131,7 +129,6 @@ export class DatabaseService {
   private updateDb(type: string, cItem: CompactItem) {
     const items = this.saved.value;
     let found = false;
-    // console.log(cItem);
     items[type] = items[type].map(i => {
       if (i.idx === cItem.idx) {
         found = true;

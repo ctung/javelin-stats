@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 
 @Component({
@@ -6,14 +6,11 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './inventory.component.html',
   styleUrls: ['./inventory.component.css']
 })
-export class InventoryComponent implements OnInit {
+export class InventoryComponent {
   type: string;
 
   constructor() {
     this.type = 'weap';
-  }
-
-  ngOnInit() {
   }
 
   selInv(type: string) {

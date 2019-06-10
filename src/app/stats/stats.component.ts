@@ -74,9 +74,10 @@ export class StatsComponent implements OnInit {
       this.armorStats = [
         ['Armor:', `${this.armor}`],
         ['Armor Max:', this.stats.jav.Armor.Max + '%'],
+        ['Effect Duration', this.stats.jav.Effect.Duration + '%'],
         ['Repair Drop Rate:', this.stats.jav.Repair['Drop Rate'] + '%'],
+        ['Effect Resist', this.stats.jav.Effect.Resist + '%'],
         ['Repair Amount:', this.stats.jav.Repair.Amount + '%'],
-        ['Effect Duration', this.stats.jav.Effect.Duration + '%']
       ];
 
       this.shieldStats = [
@@ -128,13 +129,13 @@ export class StatsComponent implements OnInit {
   private calcMeleeStats(jav: CompactJavelin): any[] {
     const wstats = [];
     if (jav && 'class' in jav) {
-      const pwr_mult = 2 ** ((Math.round(this.gearscore / 11) - 1) / 10);
+      const pwrMult = 2 ** ((Math.round(this.gearscore / 11) - 1) / 10);
       const baseDmg = this.db.baseValues[jav.class].mdmg;
       let dmgMod = this.stats.jav.All.Damage;
       dmgMod += this.stats.jav[this.db.baseValues[jav.class].mstype].Damage;
       dmgMod += this.stats.jav[this.db.baseValues[jav.class].mtype].Damage;
       dmgMod += this.stats.jav.Melee.Damage;
-      dmgMod = pwr_mult * (100 + dmgMod) - 100;
+      dmgMod = pwrMult * (100 + dmgMod) - 100;
       wstats.push([`Melee:`, `${Math.round(baseDmg * (100 + dmgMod) / 100 * (100 - this.resist) / 100)}`]);
       // wstats.push([`Melee Mod:`, `${Math.round(dmgMod)}%`]);
     }
@@ -207,9 +208,9 @@ export class StatsComponent implements OnInit {
 
   private calcDmg(item: Item, type: string, idx: number): any[] {
     let wstats = [[item.name, '']];
-    wstats = wstats.concat(this.calcDmgSub(item, type, idx, item['dstype0'], item['dtype0'], item['dmg0'], item['blast0']));
-    wstats = wstats.concat(this.calcDmgSub(item, type, idx, item['dstype1'], item['dtype1'], item['dmg1'], item['blast1']));
-    wstats = wstats.concat(this.calcProcDmgSub(item, type, idx, item['procstype'], item['proctype'], item['procdmg'], item['procblast']));
+    wstats = wstats.concat(this.calcDmgSub(item, type, idx, item.dstype0, item.dtype0, item.dmg0, item.blast0));
+    wstats = wstats.concat(this.calcDmgSub(item, type, idx, item.dstype1, item.dtype1, item.dmg1, item.blast1));
+    wstats = wstats.concat(this.calcProcDmgSub(item, type, idx, item.procstype, item.proctype, item.procdmg, item.procblast));
     return wstats;
   }
 
@@ -217,7 +218,7 @@ export class StatsComponent implements OnInit {
     const wstats = [];
     if (baseDmg && dtype && dtype in this.stats.jav) {
       // gear score scale factor
-      const pwr_mult = 2 ** ((Math.round(this.gearscore / 11) - 1) / 10);
+      const pwrMult = 2 ** ((Math.round(this.gearscore / 11) - 1) / 10);
 
       // fire,ice,elec,elemental,blast scale by 2x normal vector
       let dmgMod = 2 * this.stats.jav[dtype].Damage;
@@ -234,7 +235,7 @@ export class StatsComponent implements OnInit {
       dmgMod += this.stats[type][idx].All.Damage;
       dmgMod += this.stats[type][idx].Damage['(blank)'];
 
-      dmgMod = pwr_mult * (100 + dmgMod) - 100;
+      dmgMod = pwrMult * (100 + dmgMod) - 100;
       wstats.push([`Proc Dmg:`, `${Math.round(baseDmg * (100 + dmgMod) / 100 * (100 - this.resist) / 100) + 1}`]);
       wstats.push([`Proc Dmg Mod:`, `${Math.round(dmgMod)}%`]);
     }
