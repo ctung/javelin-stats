@@ -195,7 +195,7 @@ export class JavelinService {
   public getLink(jav: BehaviorSubject<CompactJavelin>): Observable<string> {
     const myJav = this.compressOne(jav.value);
     myJav.slot = 0;
-    return this.http.post<string>(environment.rest_api + '/build_link', { build: jsurl.stringify(myJav) }, httpOptions).pipe(
+    return this.http.post<any>(environment.rest_api + '/build_link', { build: jsurl.stringify(myJav) }, httpOptions).pipe(
       map(result => {
         const url = environment.base_href + '?id=' + result.id;
         this.copyStringToClipboard(url);
@@ -215,7 +215,7 @@ export class JavelinService {
       return of(jav.class);
     }
     if ('id' in this.snapshot.root.queryParams) {
-      return this.http.get(environment.rest_api + '/build_link/' + this.snapshot.root.queryParams.id).pipe(
+      return this.http.get<any>(environment.rest_api + '/build_link/' + this.snapshot.root.queryParams.id).pipe(
         map(result => {
           const newValue = this.javelins.value;
           const jav = jsurl.parse(result.build);
