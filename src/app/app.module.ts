@@ -21,6 +21,9 @@ import { FooterComponent } from './footer/footer.component';
 import { AuthService } from './services/auth.service';
 import { CallbackComponent } from './callback/callback.component';
 import { AuthInterceptor } from './services/auth.interceptor';
+import { NgxsModule } from '@ngxs/store';
+import { JavState } from './jav.state';
+import { environment } from '../environments/environment';
 
 @NgModule({
   declarations: [
@@ -45,6 +48,10 @@ import { AuthInterceptor } from './services/auth.interceptor';
     HttpClientModule,
     FormsModule,
     NgbModule,
+    NgxsModule.forRoot(
+      [JavState],
+      { developmentMode: !environment.production }
+    )
   ],
   entryComponents: [
     AddItemComponent,

@@ -3,8 +3,10 @@ import { CompactJavelin } from '../classes/javelin';
 import { JavelinService } from '../services/javelin.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddItemComponent } from '../add-item/add-item.component';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { JavState, JavStateModel } from '../jav.state';
+import { Select } from '@ngxs/store';
 
 @Component({
   selector: 'app-javelins',
@@ -18,6 +20,8 @@ export class JavelinsComponent implements OnInit {
   public url: string;
   public jav = new BehaviorSubject<CompactJavelin>(null);
   public inventory: boolean;
+
+  @Select(JavState) j$: Observable<string[]>;
 
   constructor(
     public javelinService: JavelinService,
@@ -38,6 +42,8 @@ export class JavelinsComponent implements OnInit {
         this.jav.next(this.javelins[this.class][this.slot]);
       }
     });
+
+    this.j$.subscribe(f => console.log(f));
   }
 
   onSelect(c: string, slot: number) {

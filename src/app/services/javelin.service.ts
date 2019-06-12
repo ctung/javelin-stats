@@ -58,9 +58,9 @@ export class JavelinService {
             ['colossus', 'interceptor', 'ranger', 'storm'].forEach(c => {
               [1, 2, 3].forEach(i => {
                 this.http.post(environment.rest_api + '/builds', {
-                  'class': c,
-                  'slot': i,
-                  'build': tmp[c][i]
+                  class: c,
+                  slot: i,
+                  build: tmp[c][i]
                 }).subscribe(res => console.log(res));
               });
             });
@@ -123,9 +123,9 @@ export class JavelinService {
       ['colossus', 'interceptor', 'ranger', 'storm'].forEach(c => {
         [1, 2, 3].forEach(i => {
           this.http.post(environment.rest_api + '/builds', {
-            'class': c,
-            'slot': i,
-            'build': javs[c][i]
+            class: c,
+            slot: i,
+            build: javs[c][i]
           }).subscribe({ error: e => console.log(e) });
         });
       });
@@ -195,9 +195,9 @@ export class JavelinService {
   public getLink(jav: BehaviorSubject<CompactJavelin>): Observable<string> {
     const myJav = this.compressOne(jav.value);
     myJav.slot = 0;
-    return this.http.post<string>(environment.rest_api + '/build_link', { 'build': jsurl.stringify(myJav) }, httpOptions).pipe(
+    return this.http.post<string>(environment.rest_api + '/build_link', { build: jsurl.stringify(myJav) }, httpOptions).pipe(
       map(result => {
-        const url = environment.base_href + '?id=' + result['id'];
+        const url = environment.base_href + '?id=' + result.id;
         this.copyStringToClipboard(url);
         return url;
       })
@@ -218,7 +218,7 @@ export class JavelinService {
       return this.http.get(environment.rest_api + '/build_link/' + this.snapshot.root.queryParams.id).pipe(
         map(result => {
           const newValue = this.javelins.value;
-          const jav = jsurl.parse(result['build']);
+          const jav = jsurl.parse(result.build);
           jav.debuffs = { acid: false, beacon: false };
           if (!(jav.class in newValue)) { newValue[jav.class] = []; }
           newValue[jav.class][0] = jav;

@@ -13,8 +13,8 @@ export class Item {
     name: string;
     power?: number;
     rarity?: string;
-    type: string;
-    inscs: Inscription[];
+    type?: string;
+    inscs?: Inscription[];
     class: string;
     base?: string;
     description?: string;
