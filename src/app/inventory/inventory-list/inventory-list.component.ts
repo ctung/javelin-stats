@@ -19,7 +19,7 @@ export class InventoryListComponent implements OnChanges {
     ) { }
 
   ngOnChanges() {
-    this.items = this.itemService.getSavedItems(this.type, null, null);
+    this.items = this.itemService.filterSavedItems(this.type, null, null);
   }
 
   delete(id: number) {

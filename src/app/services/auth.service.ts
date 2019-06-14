@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import * as auth0 from 'auth0-js';
 import { environment } from 'src/environments/environment';
-import { DatabaseService } from './database.service';
 import Secrets from '../../secrets.json';
 
 @Injectable({
@@ -22,8 +21,7 @@ export class AuthService {
   });
 
   constructor(
-    public router: Router,
-    private db: DatabaseService
+    public router: Router
   ) {
   }
 
@@ -45,11 +43,10 @@ export class AuthService {
 
   public handleAuthentication(): void {
     this.auth0.parseHash((err, authResult) => {
-      // console.log(authResult);
       if (authResult && authResult.accessToken && authResult.idToken) {
         window.location.hash = '';
         this.setSession(authResult);
-        this.db.initDb(true); // re-init the saved item database after login
+        // this.db.initDb(true); // re-init the saved item database after login
         this.router.navigate(['/']);
       } else if (err) {
         this.router.navigate(['/']);

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Inscription } from '../classes/inscription';
-import { CompactItem } from '../classes/item';
+import { CompactItem, Item, Items } from '../classes/item';
+import { Javelins } from '../classes/javelin';
 import weapons from '../../assets/weapons.json';
 import gear from '../../assets/gear.json';
 import components from '../../assets/components.json';
@@ -11,6 +12,7 @@ import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +25,8 @@ export class DatabaseService {
   public isAuthenticated = false;
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private auth: AuthService
   ) {
     this.baseValues = {
       colossus: {
@@ -61,9 +64,9 @@ export class DatabaseService {
     const newSaved = this.saved.value;
     if (this.isAuthenticated) {
       return this.http.post(environment.rest_api + '/items', { type, item: cItem }).pipe(
-        map((data: CompactItem) => ({idx: +data.idx, id: +data.id, i: data.i})),
+        map((data: CompactItem) => ({ idx: +data.idx, id: +data.id, i: data.i })),
         tap((item: CompactItem) => this.updateDb(type, item))
-        );
+      );
     } else {
       if (cItem.idx >= 0) {
         this.delSave(type, cItem.idx);
@@ -102,9 +105,9 @@ export class DatabaseService {
       this.http.get<any>(environment.rest_api + '/items').subscribe(
         data => {
           if (data.items.length) {
-            const newValue = {weap: [], gear: [], comp: [], supp: [] };
+            const newValue = { weap: [], gear: [], comp: [], supp: [] };
             data.items.forEach(i => {
-              newValue[i.type].push({idx: i.idx, id: i.id, i: i.i });
+              newValue[i.type].push({ idx: i.idx, id: i.id, i: i.i });
             });
             this.saved.next(newValue);
             localStorage.setItem('items', JSON.stringify(newValue));
@@ -119,7 +122,7 @@ export class DatabaseService {
                 }));
               });
             });
-            forkJoin(streams).subscribe({error: e => console.log(e)});
+            forkJoin(streams).subscribe({ error: e => console.log(e) });
           }
         }
       );
@@ -151,6 +154,47 @@ export class DatabaseService {
     }
     this.isAuthenticated = isAuthenticated;
     this.loadDb();
+  }
+
+  public getSavedItems(): Observable<any> {
+    const items = new Items();
+    if (this.auth.isAuthenticated()) {
+      return this.http.get<any>(environment.rest_api + '/items').pipe(
+        map(data => {
+          data.items.forEach(i => {
+            items[i.type].push({ idx: i.idx, id: i.id, i: i.i });
+          });
+          localStorage.setItem('items', JSON.stringify(items));
+          return items;
+        })
+      );
+    } else {
+      const tmp = localStorage.getItem('items');
+      if (tmp) {
+        return of(JSON.parse(tmp));
+      }
+      return of(items);
+    }
+  }
+
+  public getJavelins(): Observable<any> {
+    const javelins = new Javelins();
+    if (this.auth.isAuthenticated()) {
+      return this.http.get<any>(environment.rest_api + '/builds2').pipe(
+        map(data => {
+            data.builds.forEach(b => {
+              javelins[b.class][b.slot] = b;
+            });
+            return javelins;
+        })
+      );
+    } else {
+      const tmp = localStorage.getItem('builds');
+      if (tmp) {
+        return of(JSON.parse(tmp));
+      }
+      return of(javelins);
+    }
   }
 
 }

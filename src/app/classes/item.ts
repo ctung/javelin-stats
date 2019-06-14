@@ -7,6 +7,21 @@ export class CompactItem {
     idx?: number;
 }
 
+export class Items {
+    weap: Item[];
+    gear: Item[];
+    comp: Item[];
+    supp: Item[];
+    sigils?: Item[];
+
+    constructor() {
+        this.weap = [];
+        this.gear = [];
+        this.comp = [];
+        this.supp = [];
+    }
+}
+
 export class Item {
     id: number;
     idx?: number;
@@ -28,6 +43,7 @@ export class Item {
     buff?: string;
     bactive?: boolean;
     buffDetails?: Inscription[];
+    cItem?: CompactItem;
 
     // damage
     kinetic?: number;

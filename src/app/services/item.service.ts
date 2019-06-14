@@ -38,15 +38,15 @@ export class ItemService {
   }
 
   // get user saved items and expand them
-  public getSavedItems(type: string, javClass: string, slot: number): Observable<Item[]> {
-   return this.db.saved.pipe(
+  public filterSavedItems(type: string, javClass: string, slot: number): Observable<Item[]> {
+    return this.db.saved.pipe(
       map(r => r[type]),
       map((cItems: CompactItem[]) => cItems.map(cItem => this.expand(type, cItem))),
       map((Items: Item[]) => Items.filter((i: Item) => javClass ? i.class === javClass || i.class === 'universal' : true)),
       map((Items: Item[]) => Items.filter((i: Item) => slot !== null ? type !== 'gear' || i.slot === slot : true)),
       map((Items: Item[]) => Items.map((i: Item) => { i.text = i.name; return i; })),
       map((Items: Item[]) => Items.sort((a, b) => (a.name > b.name) ? 1 : -1))
-      );
+    );
   }
 
   public getSigils(): Item[] {
@@ -57,6 +57,19 @@ export class ItemService {
     return retval;
   }
 
+  public getSavedItems(): Observable<any> {
+    return this.db.getSavedItems().pipe(
+      map(r => {
+        Object.keys(r).forEach(type => {
+          r[type] = r[type].map(cItem => this.expand(type, cItem));
+        });
+        return r;
+      })
+    );
+  }
+
+
+
   // expand item and inscriptions
   public expand(type: string, cItem: CompactItem): Item {
     if (cItem == null) {
@@ -66,6 +79,7 @@ export class ItemService {
       item.inscs = cItem.i.map(i => this.expandOneInsc(i));
       item.itype = type;
       item.idx = cItem.idx;
+      item.cItem = cItem;
 
       // add buffs
       if (item.buff) {
@@ -97,7 +111,7 @@ export class ItemService {
           const itype = `type${i}`;
           const istat = `stat${i}`;
           const ivalue = `value${i}`;
-          const iscope =  `scope${i}`;
+          const iscope = `scope${i}`;
           if (item[itype] && item[istat] && item[ivalue]) {
             item.inscs.push({
               id: -1, type: item[itype],

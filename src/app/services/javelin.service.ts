@@ -10,6 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHeaders } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
+import { DatabaseService } from '../services/database.service';
 
 const httpOptions = {
   headers: new HttpHeaders({
@@ -29,7 +30,8 @@ export class JavelinService {
     private itemService: ItemService,
     private router: Router,
     private http: HttpClient,
-    private auth: AuthService
+    private auth: AuthService,
+    private db: DatabaseService
   ) {
     this.snapshot = this.router.routerState.snapshot;
     let tmp = {};
@@ -86,7 +88,23 @@ export class JavelinService {
       });
       this.updateJavelins(tmp);
     }
+  }
 
+  public getJavelins(): Observable<any> {
+    return this.db.getJavelins().pipe(
+      map(data => {
+        Object.keys(data).forEach(c => {
+          data[c] = data[c].map(j => {
+            j.debuffs = { acid: false, beacon: false };
+            ['weap', 'gear', 'comp'].forEach(t => {
+              j[t] = j[t].map(i => this.itemService.expand(t, i));
+            });
+            return j;
+          });
+        });
+        return data;
+      })
+    );
   }
 
   private updateJavelins(tmp: any) {

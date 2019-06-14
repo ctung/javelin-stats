@@ -39,7 +39,7 @@ export class SelItemComponent implements OnInit {
         ...this.itemService.getSigils()
       ];
     } else {
-      this.itemService.getSavedItems(this.type, this.jav.value.class, this.slot).subscribe(i => {
+      this.itemService.filterSavedItems(this.type, this.jav.value.class, this.slot).subscribe(i => {
         this.items = [
           { id: -1, name: 'Empty', inscs: [] },
           ...i
