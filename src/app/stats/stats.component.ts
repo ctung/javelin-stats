@@ -6,6 +6,8 @@ import { ItemService } from '../services/item.service';
 import { Inscription } from '../classes/inscription';
 import { Item } from '../classes/item';
 import { DatabaseService } from '../services/database.service';
+import { Store } from '@ngxs/store';
+import { SetJavName } from '../jav.state';
 
 @Component({
   selector: 'app-stats',
@@ -29,11 +31,15 @@ export class StatsComponent implements OnInit {
   resist: number;
   initialized: boolean;
   devMode: boolean;
+  javClass: string;
+  javSlot: number;
+
 
   constructor(
     private javelinService: JavelinService,
     private itemService: ItemService,
-    private db: DatabaseService
+    private db: DatabaseService,
+    private store: Store
   ) {
     this.devMode = isDevMode();
   }
@@ -49,7 +55,10 @@ export class StatsComponent implements OnInit {
       this.shield = 0;
       this.weapStats = [];
 
+
       if (this.jav.value) {
+        this.javClass = this.jav.value.class;
+        this.javSlot = this.jav.value.slot;
         if ('debuffs' in this.jav.value) {
           if (this.jav.value.debuffs.beacon) { this.resist -= 33; }
           if (this.jav.value.debuffs.acid) { this.resist -= 25; }
@@ -320,7 +329,8 @@ export class StatsComponent implements OnInit {
   }
 
   changeName(evt: any) {
-    this.javelinService.changeName(this.jav, evt.target.value);
+    // this.javelinService.changeName(this.jav, evt.target.value);
+    this.store.dispatch(new SetJavName(this.javClass, this.javSlot, evt.target.value));
   }
 
   updateDebuff(type: string) {

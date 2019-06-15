@@ -1,11 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ItemService } from '../services/item.service';
 import { NgbActiveModal, NgbTypeahead } from '@ng-bootstrap/ng-bootstrap';
-import { JavelinService } from '../services/javelin.service';
 import { Item } from '../classes/item';
-import { BehaviorSubject, Observable, Subject, merge } from 'rxjs';
+import { Observable, Subject, merge } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged, filter } from 'rxjs/operators';
-import { CompactJavelin, } from '../classes/javelin';
 import { Store } from '@ngxs/store';
 import { SetJavItem } from '../jav.state';
 
@@ -30,9 +27,7 @@ export class SelItemComponent implements OnInit {
   longNames = { weap: 'Weapon', gear: 'Gear', comp: 'Component', supp: 'Support', sigils: 'Sigils' };
 
   constructor(
-    private itemService: ItemService,
     public activeModal: NgbActiveModal,
-    private javelinService: JavelinService,
     private store: Store
   ) { }
 
@@ -68,15 +63,7 @@ export class SelItemComponent implements OnInit {
   public formatter = (x: { name: string }) => x.name;
 
   public changeItem(evt: any) {
-    const itemSelector = {
-      javClass: this.javClass,
-      javSlot: this.javSlot,
-      type: this.type,
-      slot: this.slot,
-      item: evt.item
-    };
-    this.store.dispatch(new SetJavItem(itemSelector, evt));
-    // this.javelinService.updateItem(this.jav, this.type, this.slot, evt);
+    this.store.dispatch(new SetJavItem(this.javClass, this.javSlot, this.type, this.slot, evt.item));
     this.activeModal.close();
   }
 }

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { CompactJavelin, Javelin } from '../classes/javelin';
+import { CompactJavelin, Javelin, Javelins } from '../classes/javelin';
 import { JavelinService } from '../services/javelin.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddItemComponent } from '../add-item/add-item.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
+import { Store } from '@ngxs/store';
 
 @Component({
   selector: 'app-javelins',
@@ -13,6 +14,7 @@ import { take } from 'rxjs/operators';
 })
 export class JavelinsComponent implements OnInit {
   public javelins: any;
+  public javelins$: Observable<Javelins>;
   private class: string;
   private slot: number;
   public url: string;
@@ -22,7 +24,8 @@ export class JavelinsComponent implements OnInit {
 
   constructor(
     public javelinService: JavelinService,
-    public modalService: NgbModal
+    public modalService: NgbModal,
+    public store: Store
   ) { }
 
   ngOnInit() {
@@ -32,6 +35,8 @@ export class JavelinsComponent implements OnInit {
       this.jav.next(this.javelins[this.class][this.slot]);
     });
     this.inventory = false;
+
+    this.javelins$ = this.store.select(state => state.javelins.javelins);
 
     this.javelinService.javelins.subscribe(j => {
       this.javelins = j;

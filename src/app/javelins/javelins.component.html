@@ -13,7 +13,7 @@
                                 <button *ngFor="let i of [1,2,3]" tabindex="-1" type="button" class="btn font-medium"
                                     [class.btn-outline-secondary]="class != jav.value?.class || i != jav.value?.slot"
                                     [class.btn-secondary]="class === jav.value?.class && i === jav.value?.slot"
-                                    (click)="onSelect(class,i)">{{javelins[class][i].name}}</button>
+                                    (click)="onSelect(class,i)">{{(javelins$|async)[class][i].name}}</button>
                             </div>
                         </div>
                     

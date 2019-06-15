@@ -1,8 +1,8 @@
 import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Item } from '../classes/item';
 import { Observable } from 'rxjs';
-import { JavelinService } from '../services/javelin.service';
 import { Store } from '@ngxs/store';
+import { ToggleBuff } from '../jav.state';
 
 @Component({
   selector: 'app-item',
@@ -19,10 +19,8 @@ export class ItemComponent implements OnChanges {
   item$: Observable<Item>;
 
   constructor(
-    private javelinService: JavelinService,
     private store: Store
-  ) {
-  }
+  ) { }
 
   ngOnChanges() {
     this.item$ = this.store.select(state => state.javelins.javelins[this.javClass][this.javSlot][this.type][this.slot]);
@@ -32,10 +30,10 @@ export class ItemComponent implements OnChanges {
   selItem() {
     this.output.emit([this.type, this.slot]);
   }
-  /*
-    toggleActive() {
-      this.javelinService.toggleBuff(this.jav, this.type, this.slot, !this.itemDetails.bactive);
-    }
-    */
+
+  toggleActive() {
+    this.store.dispatch(new ToggleBuff(this.javClass, this.javSlot, this.type, this.slot));
+  }
+
 }
 

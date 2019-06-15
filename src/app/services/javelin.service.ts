@@ -54,9 +54,7 @@ export class JavelinService {
         .subscribe(data => {
           if (Object.keys(data).length) {
             tmp = data;
-            // console.log(tmp);
           } else {
-            // if database is empty, write initialize with localstore
             ['colossus', 'interceptor', 'ranger', 'storm'].forEach(c => {
               [1, 2, 3].forEach(i => {
                 this.http.post(environment.rest_api + '/builds', {
@@ -120,6 +118,7 @@ export class JavelinService {
   // make sure to save the minimum data required to reconstruct build
   public save(javs: any): void {
     javs = this.compress(javs);
+    console.log(javs);
     if (this.auth.isAuthenticated()) {
       ['colossus', 'interceptor', 'ranger', 'storm'].forEach(c => {
         [1, 2, 3].forEach(i => {
@@ -153,11 +152,9 @@ export class JavelinService {
         const oldItem = jav[t][i];
         if (oldItem != null) {
           const newItem = { id: oldItem.id, i: [], idx: oldItem.idx };
-          if (oldItem.i != null) {
-            oldItem.i.forEach(insc => {
-              if (insc[0] >= 0) {
-                newItem.i.push(Object.assign([], insc));
-              }
+          if (oldItem.inscs != null) {
+            oldItem.inscs.forEach(insc => {
+              newItem.i.push([insc.id, insc.scope, insc.value]);
             });
           }
           j[t][i] = newItem;

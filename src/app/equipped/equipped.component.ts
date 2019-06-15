@@ -14,8 +14,7 @@ export class EquippedComponent {
 
   constructor(
     public modalService: NgbModal
-  ) {
-  }
+  ) { }
 
   selItem(evt: Event): void {
     const type = evt[0];
