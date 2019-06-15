@@ -1,46 +1,41 @@
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
-import { ItemService } from '../services/item.service';
+import { Component, Input, Output, EventEmitter, OnChanges } from '@angular/core';
 import { Item } from '../classes/item';
-import { CompactJavelin } from '../classes/javelin';
-import { BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 import { JavelinService } from '../services/javelin.service';
-
+import { Store } from '@ngxs/store';
 
 @Component({
   selector: 'app-item',
   templateUrl: './item.component.html',
-  styleUrls: ['./item.component.css'],
-  providers: [ItemService]
+  styleUrls: ['./item.component.css']
 })
-export class ItemComponent implements OnInit {
-  @Input() jav: BehaviorSubject<CompactJavelin>;
+export class ItemComponent implements OnChanges {
+  @Input() javClass: string;
+  @Input() javSlot: number;
   @Input() type: string;
   @Input() slot: number;
   @Output() output: EventEmitter<any> = new EventEmitter();
-  itemDetails: Item;
   slotName: string;
+  item$: Observable<Item>;
 
   constructor(
-    private itemService: ItemService,
-    private javelinService: JavelinService
+    private javelinService: JavelinService,
+    private store: Store
   ) {
-
   }
 
-  ngOnInit() {
-    this.jav.subscribe(j => {
-      const cItem = j[this.type][this.slot];
-      this.itemDetails = this.itemService.expand(this.type, cItem);
-      this.slotName = (this.type === 'gear') ? `Ability\u00A0` + (this.slot + 1) : '';
-    });
+  ngOnChanges() {
+    this.item$ = this.store.select(state => state.javelins.javelins[this.javClass][this.javSlot][this.type][this.slot]);
+    this.slotName = (this.type === 'gear') ? `Ability\u00A0` + (this.slot + 1) : '';
   }
 
   selItem() {
     this.output.emit([this.type, this.slot]);
   }
-
-  toggleActive() {
-    this.javelinService.toggleBuff(this.jav, this.type, this.slot, !this.itemDetails.bactive);
-  }
+  /*
+    toggleActive() {
+      this.javelinService.toggleBuff(this.jav, this.type, this.slot, !this.itemDetails.bactive);
+    }
+    */
 }
 

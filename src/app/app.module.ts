@@ -25,6 +25,8 @@ import { NgxsModule } from '@ngxs/store';
 import { JavState } from './jav.state';
 import { environment } from '../environments/environment';
 
+import { NgxsReduxDevtoolsPluginModule } from '@ngxs/devtools-plugin';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -51,7 +53,8 @@ import { environment } from '../environments/environment';
     NgxsModule.forRoot(
       [JavState],
       { developmentMode: !environment.production }
-    )
+    ),
+    NgxsReduxDevtoolsPluginModule.forRoot()
   ],
   entryComponents: [
     AddItemComponent,

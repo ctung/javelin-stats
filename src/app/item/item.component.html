@@ -1,27 +1,27 @@
-<li *ngIf="itemDetails" class="list-group-item bg-grey border-top border-secondary py-1 px-2">
+<li *ngIf="item$" class="list-group-item bg-grey border-top border-secondary py-1 px-2">
   <div class="relative" (click)="selItem()">
     <div class="row my-1">
-      <h5 class="card-title col-8 my-1">{{ itemDetails.name}}
-        <img class="comboImg" *ngIf="itemDetails.combo === 'Primer'" src="../assets/primer.png">
-        <img class="comboImg" *ngIf="itemDetails.combo === 'Detonator'" src="../assets/detonator.png">
+      <h5 class="card-title col-8 my-1">{{ (item$|async)?.name || 'Empty'}}
+        <img class="comboImg" *ngIf="(item$|async)?.combo === 'Primer'" src="../assets/primer.png">
+        <img class="comboImg" *ngIf="(item$|async)?.combo === 'Detonator'" src="../assets/detonator.png">
       </h5>
       <h5 class="card-title col-4 my-1 text-right">{{slotName}}</h5>
     </div>
     <div class="row my-1">
-      <div class="col-6 px-3 inscText" *ngFor="let i of itemDetails.inscs">
+      <div class="col-6 px-3 inscText" *ngFor="let i of (item$|async)?.inscs">
         <img src="{{i.png}}" /> {{ i.value }}% {{ i.type }} {{ i.stat === '(blank)' ? '' : i.stat }}
       </div>
     </div>
   </div>
-  <div *ngIf="itemDetails.buff" class="row m-1">
-    <div class="btn-group btn-group-toggle btn-block" placement="bottom" [ngbTooltip]="itemDetails.special">
+  <div *ngIf="(item$|async)?.buff" class="row m-1">
+    <div class="btn-group btn-group-toggle btn-block" placement="bottom" [ngbTooltip]="(item$|async).special">
       <label class="btn btn-block text-left buff-button border-secondary" ngbButtonLabel>
-        <input (click)="toggleActive()" type="checkbox" ngbButton [ngModel]="itemDetails.bactive">
+        <input (click)="toggleActive()" type="checkbox" ngbButton [ngModel]="(item$|async).bactive">
         <div class="row">
-          <div class="col-6 px-2"><b>{{itemDetails.buff}}</b></div>
-          <div class="col-6 px-3 inscText" *ngFor="let i of itemDetails.buffDetails">
+          <div class="col-6 px-2"><b>{{(item$|async).buff}}</b></div>
+          <div class="col-6 px-3 inscText" *ngFor="let i of (item$|async).buffDetails">
             <img src="{{i.png}}" />
-            <span [ngClass]="itemDetails.bactive ? 'null' : 'strikethrough'">
+            <span [ngClass]="(item$|async).bactive ? 'null' : 'strikethrough'">
               {{ i.value }}% {{ i.type }} {{ i.stat === '(blank)' ? '' : i.stat }}</span>
           </div>
         </div>

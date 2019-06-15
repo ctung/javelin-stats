@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from './services/database.service';
 import { AuthService } from './services/auth.service';
 import { Store } from '@ngxs/store';
-import { GetSavedItems } from './jav.state';
+import { InitStore } from './jav.state';
 
 @Component({
   selector: 'app-root',
@@ -24,6 +24,6 @@ export class AppComponent implements OnInit {
 
   ngOnInit() {
     this.db.initDb(this.auth.isAuthenticated());
-    this.store.dispatch(new GetSavedItems());
+    this.store.dispatch(new InitStore());
   }
 }

@@ -52,7 +52,7 @@
             <div class="col-sm-12 col-md-10" *ngIf="!inventory">
                 <div class="row">
                     <div class="col-sm-12 col-md-6" id="main">
-                        <app-equipped [jav]="jav"></app-equipped>
+                        <app-equipped  [javSlot]="slot" [javClass]="class"></app-equipped>
                     </div>
                     <div class="col-sm-12 col-md-6" id="stats">
                         <app-stats [jav]="jav"></app-stats>

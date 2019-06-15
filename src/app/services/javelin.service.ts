@@ -90,23 +90,6 @@ export class JavelinService {
     }
   }
 
-  public getJavelins(): Observable<any> {
-    return this.db.getJavelins().pipe(
-      map(data => {
-        Object.keys(data).forEach(c => {
-          data[c] = data[c].map(j => {
-            j.debuffs = { acid: false, beacon: false };
-            ['weap', 'gear', 'comp'].forEach(t => {
-              j[t] = j[t].map(i => this.itemService.expand(t, i));
-            });
-            return j;
-          });
-        });
-        return data;
-      })
-    );
-  }
-
   private updateJavelins(tmp: any) {
     const newValue = this.javelins.value;
     ['colossus', 'interceptor', 'ranger', 'storm'].forEach(c => {
@@ -170,7 +153,7 @@ export class JavelinService {
         const oldItem = jav[t][i];
         if (oldItem != null) {
           const newItem = { id: oldItem.id, i: [], idx: oldItem.idx };
-          if (t !== 'sigils') {
+          if (oldItem.i != null) {
             oldItem.i.forEach(insc => {
               if (insc[0] >= 0) {
                 newItem.i.push(Object.assign([], insc));
@@ -271,6 +254,25 @@ export class JavelinService {
     const newValue = this.javelins.value;
     newValue[jav.value.class][jav.value.slot].debuffs[type] = value;
     this.javelins.next(newValue);
+  }
+
+  // NGXS stuff below
+
+  public getJavelins(): Observable<any> {
+    return this.db.getJavelins().pipe(
+      map(data => {
+        Object.keys(data).forEach(c => {
+          data[c] = data[c].map(j => {
+            j.debuffs = { acid: false, beacon: false };
+            ['weap', 'gear', 'comp'].forEach(t => {
+              j[t] = j[t].map(i => this.itemService.expand(t, i));
+            });
+            return j;
+          });
+        });
+        return data;
+      })
+    );
   }
 
 }

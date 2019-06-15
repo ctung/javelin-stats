@@ -1,33 +1,33 @@
-<div *ngIf="jav.value">
+<div *ngIf="javClass">
   <div class="card mt-3 border border-secondary">
     <h5 class="card-header p-2 dark-yellow">Weapons</h5>
     <ul class="list-group list-group-flush">
-      <app-item *ngFor="let i of [0,1]" type="weap" [slot]="i" [jav]="jav" (output)="selItem($event)"></app-item>
+      <app-item *ngFor="let i of [0,1]" type="weap" [javClass]="javClass" [javSlot]="javSlot" [slot]="i" (output)="selItem($event)"></app-item>
     </ul>
   </div>
   <div class="card mt-3 border border-secondary">
     <h5 class="card-header p-2 dark-yellow">Gear</h5>
     <ul class="list-group list-group-flush">
-      <app-item *ngFor="let i of [0,1]" type="gear" [slot]="i" [jav]="jav" (output)="selItem($event)"></app-item>
+      <app-item *ngFor="let i of [0,1]" type="gear" [javClass]="javClass" [javSlot]="javSlot" [slot]="i" (output)="selItem($event)"></app-item>
     </ul>
   </div>
   <div class="card mt-3 border border-secondary">
     <h5 class="card-header p-2 dark-yellow">Components</h5>
     <ul class="list-group list-group-flush">
-      <app-item *ngFor="let i of [0,1,2,3,4,5]" type="comp" [slot]="i" [jav]="jav" (output)="selItem($event)">
+      <app-item *ngFor="let i of [0,1,2,3,4,5]" type="comp" [javClass]="javClass" [javSlot]="javSlot" [slot]="i" (output)="selItem($event)">
       </app-item>
     </ul>
   </div>
   <div class="card mt-3 border border-secondary">
     <h5 class="card-header p-2 dark-yellow">Support</h5>
     <ul class="list-group list-group-flush">
-      <app-item type="supp" slot="0" [jav]="jav" (output)="selItem($event)"></app-item>
+      <app-item type="supp" [javClass]="javClass" [javSlot]="javSlot" slot="0" (output)="selItem($event)"></app-item>
     </ul>
   </div>
   <div class="card mt-3 border border-secondary">
     <h5 class="card-header p-2 dark-yellow">Sigils</h5>
     <ul class="list-group list-group-flush">
-      <app-item *ngFor="let i of [0,1,2]" type="sigils" [slot]="i" [jav]="jav" (output)="selItem($event)"></app-item>
+      <app-item *ngFor="let i of [0,1,2]" type="sigils" [javClass]="javClass" [javSlot]="javSlot" [slot]="i" (output)="selItem($event)"></app-item>
     </ul>
   </div>
 </div>

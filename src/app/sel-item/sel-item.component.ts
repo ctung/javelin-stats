@@ -5,7 +5,9 @@ import { JavelinService } from '../services/javelin.service';
 import { Item } from '../classes/item';
 import { BehaviorSubject, Observable, Subject, merge } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged, filter } from 'rxjs/operators';
-import { CompactJavelin } from '../classes/javelin';
+import { CompactJavelin, } from '../classes/javelin';
+import { Store } from '@ngxs/store';
+import { SetJavItem } from '../jav.state';
 
 
 @Component({
@@ -14,9 +16,10 @@ import { CompactJavelin } from '../classes/javelin';
   styleUrls: ['./sel-item.component.css']
 })
 export class SelItemComponent implements OnInit {
+  javClass: string;
+  javSlot: number;
   type: string;  // weap, gear, comp, sigils
   slot: number;  // item slot number
-  jav: BehaviorSubject<CompactJavelin>;
   typeLongName: string;
 
   @ViewChild('instance') instance: NgbTypeahead;
@@ -29,22 +32,24 @@ export class SelItemComponent implements OnInit {
   constructor(
     private itemService: ItemService,
     public activeModal: NgbActiveModal,
-    private javelinService: JavelinService
+    private javelinService: JavelinService,
+    private store: Store
   ) { }
 
   ngOnInit() {
     if (this.type === 'sigils') {
       this.items = [
         { id: -1, name: 'Empty', inscs: [] },
-        ...this.itemService.getSigils()
+        ...this.store.snapshot().javelins.itemDb.sigils
       ];
     } else {
-      this.itemService.filterSavedItems(this.type, this.jav.value.class, this.slot).subscribe(i => {
-        this.items = [
-          { id: -1, name: 'Empty', inscs: [] },
-          ...i
-        ];
-      });
+      this.items = [
+        { id: -1, name: 'Empty', inscs: [] },
+        ...this.store.snapshot().javelins.savedItems[this.type]
+          .filter((item: Item) => this.javClass ? item.class === this.javClass || item.class === 'universal' : true)
+          .filter((item: Item) => this.slot !== null ? this.type !== 'gear' || item.slot === this.slot : true)
+          .sort((a, b) => (a.name > b.name) ? 1 : -1)
+      ];
     }
     this.typeLongName = this.longNames[this.type];
   }
@@ -62,9 +67,16 @@ export class SelItemComponent implements OnInit {
 
   public formatter = (x: { name: string }) => x.name;
 
-  public changeItem(evt: Item) {
-    evt.id = +evt.id;
-    this.javelinService.updateItem(this.jav, this.type, this.slot, evt);
+  public changeItem(evt: any) {
+    const itemSelector = {
+      javClass: this.javClass,
+      javSlot: this.javSlot,
+      type: this.type,
+      slot: this.slot,
+      item: evt.item
+    };
+    this.store.dispatch(new SetJavItem(itemSelector, evt));
+    // this.javelinService.updateItem(this.jav, this.type, this.slot, evt);
     this.activeModal.close();
   }
 }
