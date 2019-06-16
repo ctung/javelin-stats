@@ -6,6 +6,7 @@ import { AddItemComponent } from '../add-item/add-item.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Store } from '@ngxs/store';
+import { SelJav, ResetJav } from '../jav.state';
 
 @Component({
   selector: 'app-javelins',
@@ -19,7 +20,6 @@ export class JavelinsComponent implements OnInit {
   private slot: number;
   public url: string;
   public jav = new BehaviorSubject<CompactJavelin>(null);
-  public tjav$: Observable<Javelin>;
   public inventory: boolean;
 
   constructor(
@@ -47,11 +47,12 @@ export class JavelinsComponent implements OnInit {
 
   }
 
-  onSelect(c: string, slot: number) {
-    this.class = c;
-    this.slot = slot;
+  onSelect(javClass: string, javSlot: number) {
+    this.store.dispatch(new SelJav(javClass, javSlot));
+    this.class = javClass;
+    this.slot = javSlot;
     this.inventory = false;
-    this.jav.next(this.javelins[c][slot]);
+    this.jav.next(this.javelins[javClass][javSlot]);
 
   }
 
@@ -72,14 +73,9 @@ export class JavelinsComponent implements OnInit {
   }
 
   resetJavConfirm(jav: CompactJavelin) {
-    this.javelinService.resetJav(jav);
+    // this.javelinService.resetJav(jav);
+    this.store.dispatch(new ResetJav());
     this.modalService.dismissAll('');
-  }
-
-  resetCache() {
-    localStorage.removeItem('items');
-    localStorage.removeItem('javelins');
-    location.reload();
   }
 
   toggleInventory() {

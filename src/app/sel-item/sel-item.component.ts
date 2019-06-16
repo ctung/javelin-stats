@@ -32,6 +32,8 @@ export class SelItemComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.javClass = this.store.snapshot().javelins.selected.javClass;
+    this.javSlot = this.store.snapshot().javelins.selected.javSlot;
     if (this.type === 'sigils') {
       this.items = [
         { id: -1, name: 'Empty', inscs: [] },
@@ -63,7 +65,7 @@ export class SelItemComponent implements OnInit {
   public formatter = (x: { name: string }) => x.name;
 
   public changeItem(evt: any) {
-    this.store.dispatch(new SetJavItem(this.javClass, this.javSlot, this.type, this.slot, evt.item));
+    this.store.dispatch(new SetJavItem(this.type, this.slot, evt.item));
     this.activeModal.close();
   }
 }

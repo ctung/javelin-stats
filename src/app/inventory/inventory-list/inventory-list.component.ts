@@ -4,6 +4,8 @@ import { Item } from '../../classes/item';
 import { Observable } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddItemComponent } from '../../add-item/add-item.component';
+import { Store } from '@ngxs/store';
+import { DelItem } from 'src/app/jav.state';
 
 @Component({
   selector: 'app-inventory-list',
@@ -12,18 +14,19 @@ import { AddItemComponent } from '../../add-item/add-item.component';
 })
 export class InventoryListComponent implements OnChanges {
   @Input() type: string;
-  items: Observable<Item[]>;
+  items$: Observable<Item[]>;
   constructor(
     private itemService: ItemService,
-    public modalService: NgbModal
+    public modalService: NgbModal,
+    private store: Store
     ) { }
 
   ngOnChanges() {
-    this.items = this.itemService.filterSavedItems(this.type, null, null);
+    this.items$ = this.store.select(state => state.javelins.savedItems[this.type]);
   }
 
   delete(id: number) {
-    this.itemService.del(this.type, id);
+    this.store.dispatch(new DelItem(this.type, id));
   }
 
   edit(item: Item) {

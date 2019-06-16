@@ -118,7 +118,6 @@ export class JavelinService {
   // make sure to save the minimum data required to reconstruct build
   public save(javs: any): void {
     javs = this.compress(javs);
-    console.log(javs);
     if (this.auth.isAuthenticated()) {
       ['colossus', 'interceptor', 'ranger', 'storm'].forEach(c => {
         [1, 2, 3].forEach(i => {
@@ -164,28 +163,10 @@ export class JavelinService {
     return j;
   }
 
-  public resetJav(jav: CompactJavelin) {
-    const newValue = this.javelins.value;
-    const c = jav.class;
-    const i = jav.slot;
-    newValue[c][i] = new CompactJavelin(c, i, 'loadout ' + i);
-    newValue[c][i].debuffs = { acid: false, beacon: false };
-    ['weap', 'gear', 'comp'].forEach(j => newValue[c][i][j].forEach(k => k.bactive = true));
-    this.javelins.next(newValue);
-    this.save(newValue);
-  }
-
   public updateItem(jav: BehaviorSubject<CompactJavelin>, type: string, slot: number, item: Item) {
     const newValue = this.javelins.value;
     // console.log([jav.value, type, slot]);
     newValue[jav.value.class][jav.value.slot][type][slot] = this.itemService.compress(item);
-    this.javelins.next(newValue);
-    this.save(newValue);
-  }
-
-  public changeName(jav: BehaviorSubject<CompactJavelin>, name: string) {
-    const newValue = this.javelins.value;
-    newValue[jav.value.class][jav.value.slot].name = name;
     this.javelins.next(newValue);
     this.save(newValue);
   }
@@ -239,12 +220,6 @@ export class JavelinService {
     selBox.select();
     document.execCommand('copy');
     document.body.removeChild(selBox);
-  }
-
-  public toggleBuff(jav: BehaviorSubject<CompactJavelin>, type: string, slot: number, value: boolean) {
-    const newValue = this.javelins.value;
-    newValue[jav.value.class][jav.value.slot][type][slot].bactive = value;
-    this.javelins.next(newValue);
   }
 
   public toggleDebuff(jav: BehaviorSubject<CompactJavelin>, type: string, value: boolean) {

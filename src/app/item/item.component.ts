@@ -10,8 +10,6 @@ import { ToggleBuff } from '../jav.state';
   styleUrls: ['./item.component.css']
 })
 export class ItemComponent implements OnChanges {
-  @Input() javClass: string;
-  @Input() javSlot: number;
   @Input() type: string;
   @Input() slot: number;
   @Output() output: EventEmitter<any> = new EventEmitter();
@@ -23,7 +21,8 @@ export class ItemComponent implements OnChanges {
   ) { }
 
   ngOnChanges() {
-    this.item$ = this.store.select(state => state.javelins.javelins[this.javClass][this.javSlot][this.type][this.slot]);
+    this.item$ = this.store
+      .select(state => state.javelins.javelins[state.javelins.selected.javClass][state.javelins.selected.javSlot][this.type][this.slot]);
     this.slotName = (this.type === 'gear') ? `Ability\u00A0` + (this.slot + 1) : '';
   }
 
@@ -32,7 +31,7 @@ export class ItemComponent implements OnChanges {
   }
 
   toggleActive() {
-    this.store.dispatch(new ToggleBuff(this.javClass, this.javSlot, this.type, this.slot));
+    this.store.dispatch(new ToggleBuff(this.type, this.slot));
   }
 
 }

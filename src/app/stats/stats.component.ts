@@ -329,8 +329,7 @@ export class StatsComponent implements OnInit {
   }
 
   changeName(evt: any) {
-    // this.javelinService.changeName(this.jav, evt.target.value);
-    this.store.dispatch(new SetJavName(this.javClass, this.javSlot, evt.target.value));
+    this.store.dispatch(new SetJavName(evt.target.value));
   }
 
   updateDebuff(type: string) {

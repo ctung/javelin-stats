@@ -9,7 +9,7 @@ import inscriptions from '../../assets/inscriptions.json';
 import support from '../../assets/support.json';
 import sigils from '../../assets/sigils.json';
 import { BehaviorSubject, forkJoin, Observable, of } from 'rxjs';
-import { tap, map } from 'rxjs/operators';
+import { tap, map, take } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { AuthService } from './auth.service';
@@ -59,7 +59,7 @@ export class DatabaseService {
       }
     };
   }
-
+/*
   public addSave(type: string, cItem: CompactItem): Observable<CompactItem> {
     const newSaved = this.saved.value;
     if (this.isAuthenticated) {
@@ -81,22 +81,12 @@ export class DatabaseService {
       return of(cItem);
     }
   }
-
-  // delete weapon in localstorage, leaving entry as null
-  public delSave(type: string, idx: number) {
-    const newSaved = this.saved.value;
+*/
+  // delete item
+  public delSave(idx: number) {
     if (this.isAuthenticated) {
-      this.http.delete(environment.rest_api + '/items/' + idx)
-        .subscribe(() => this.loadDb());
-    } else {
-      for (let i = 0; i < newSaved[type].length; i++) {
-        if (newSaved[type][i].idx === idx) {
-          newSaved[type].splice(i, 1);
-          break;
-        }
-      }
-      this.saved.next(newSaved);
-      localStorage.setItem('items', JSON.stringify(newSaved));
+      this.http.delete(environment.rest_api + '/items/' + idx).pipe(take(1))
+        .subscribe(res => console.log(res));
     }
   }
 

@@ -26,15 +26,15 @@ export class ItemService {
     }
     return newItem;
   }
-
+/*
   // add weapon to localstorage saved weapon list
   public add(type: string, cItem: CompactItem): Observable<CompactItem> {
     return this.db.addSave(type, cItem);
   }
-
+*/
   // delete weapon in localstorage, leaving entry as null
-  public del(type: string, idx: number) {
-    this.db.delSave(type, idx);
+  public delItem(idx: number) {
+    this.db.delSave(idx);
   }
 
   // get user saved items and expand them
