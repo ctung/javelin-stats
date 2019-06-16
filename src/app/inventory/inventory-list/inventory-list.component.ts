@@ -1,5 +1,4 @@
 import { Component, OnChanges, Input } from '@angular/core';
-import { ItemService } from '../../services/item.service';
 import { Item } from '../../classes/item';
 import { Observable } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -16,7 +15,6 @@ export class InventoryListComponent implements OnChanges {
   @Input() type: string;
   items$: Observable<Item[]>;
   constructor(
-    private itemService: ItemService,
     public modalService: NgbModal,
     private store: Store
     ) { }

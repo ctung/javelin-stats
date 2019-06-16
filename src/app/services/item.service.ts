@@ -37,18 +37,6 @@ export class ItemService {
     this.db.delSave(idx);
   }
 
-  // get user saved items and expand them
-  public filterSavedItems(type: string, javClass: string, slot: number): Observable<Item[]> {
-    return this.db.saved.pipe(
-      map(r => r[type]),
-      map((cItems: CompactItem[]) => cItems.map(cItem => this.expand(type, cItem))),
-      map((Items: Item[]) => Items.filter((i: Item) => javClass ? i.class === javClass || i.class === 'universal' : true)),
-      map((Items: Item[]) => Items.filter((i: Item) => slot !== null ? type !== 'gear' || i.slot === slot : true)),
-      map((Items: Item[]) => Items.map((i: Item) => { i.text = i.name; return i; })),
-      map((Items: Item[]) => Items.sort((a, b) => (a.name > b.name) ? 1 : -1))
-    );
-  }
-
   public getSigils(): Item[] {
     const retval = this.db.itemDb.sigils
       .map(i => ({ id: i.id, i: [] }))
@@ -67,8 +55,6 @@ export class ItemService {
       })
     );
   }
-
-
 
   // expand item and inscriptions
   public expand(type: string, cItem: CompactItem): Item {

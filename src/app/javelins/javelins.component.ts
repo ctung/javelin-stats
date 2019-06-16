@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { CompactJavelin, Javelin, Javelins } from '../classes/javelin';
+import { CompactJavelin, Javelins } from '../classes/javelin';
 import { JavelinService } from '../services/javelin.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddItemComponent } from '../add-item/add-item.component';
@@ -73,7 +73,6 @@ export class JavelinsComponent implements OnInit {
   }
 
   resetJavConfirm(jav: CompactJavelin) {
-    // this.javelinService.resetJav(jav);
     this.store.dispatch(new ResetJav());
     this.modalService.dismissAll('');
   }

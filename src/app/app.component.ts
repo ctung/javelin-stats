@@ -18,7 +18,6 @@ export class AppComponent implements OnInit {
     private store: Store
   ) {
     auth.handleAuthentication();
-    // this.db.initDb(this.auth.isAuthenticated());
 
   }
 
