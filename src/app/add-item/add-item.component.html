@@ -9,26 +9,28 @@
     <div class="row py-0 justify-content-center">
       <div class="col-12 col-md-8 form-group py-1 px-4">
         <input name="itemName" class="form-control" type="text" [ngbTypeahead]="searchItem" [inputFormatter]="formatter"
-          [resultFormatter]="formatter" placeholder="Select Item" [(ngModel)]="itemModel"/>
+          [resultFormatter]="formatter" placeholder="Select Item" (selectItem)="changeItem($event)"/>
       </div>
     </div>
-    <div *ngFor="let i of inscRange" class="row py-0 justify-content-center">
+    <div *ngFor="let insc of item.inscs; index as i" class="row py-0 justify-content-center">
       <div class="col-12 col-md-9">
         <div class="input-group mb-3 mx-auto">
           <div class="input-group-prepend">
-            <span class="input-group-text val-css" (click)="toggleScope(i)"><img src="{{scopes[i].img}}" /></span>
+            <span class="input-group-text val-css" (click)="toggleScope(insc)"><img src="../assets/{{insc.png}}" /></span>
           </div>
-          <input name="{{'val' + i}}" class="form-control" [(ngModel)]="inscVals[i]" type="number" placeholder="Value">
+          <input name="{{'val' + i}}" class="form-control" [(ngModel)]="insc.value" type="number" placeholder="Value">
           <div class="input-group-append">
             <input name="{{'insc' + i}}" class="form-control" type="text" [ngbTypeahead]="searchInscs" [inputFormatter]="formatter"
-              [resultFormatter]="formatter" [(ngModel)]="inscModel[i]" />
+              [resultFormatter]="formatter" (selectItem)="changeInsc($event, insc)" />
           </div>
         </div>
       </div>
     </div>
   </div>
+{{item | json}}
   <div class="modal-footer py-1 border-secondary">
     <button type="button" class="btn btn-primary m-2" (click)="addItem()">Submit</button>
     <button type="button" class="btn btn-secondary m-2" (click)="activeModal.close('Close click')">Close</button>
   </div>
 </form>
+

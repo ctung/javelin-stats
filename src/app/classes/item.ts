@@ -101,12 +101,12 @@ export class Item {
     stat3?: string;
 
     constructor(type: string) {
+        const inscRange = (type === 'comp') ? [0, 1] : [0, 1, 2, 3];
         this.id = -1;
-        this.name = 'Empty';
-        this.inscs = [];
+        this.name = null;
+        this.inscs = inscRange.map(i => new Inscription());
         this.class = 'universal';
         this.type = type;
-        this.buffDetails = [];
     }
 
 }

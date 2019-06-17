@@ -7,10 +7,12 @@ export class Inscription {
     png?: string;
     active?: boolean;
     deprecated?: boolean;
+    text?: string;
 
     constructor() {
         this.id = null;
         this.value = null;
-        this.scope = null;
+        this.scope = 1;
+        this.png = 'jav.png';
     }
 }

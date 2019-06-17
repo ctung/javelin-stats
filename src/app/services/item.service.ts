@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Item, CompactItem } from '../classes/item';
 import { Inscription } from '../classes/inscription';
 import { DatabaseService } from '../services/database.service';
-import { map } from 'rxjs/operators';
+import { map, take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -18,7 +18,7 @@ export class ItemService {
     if (item.type !== 'sigils') {
       const newi = [];
       item.inscs.forEach(i => {
-        if (i.id >= 0) {
+        if (i.id >= 0 && i.id !== null) {
           newi.push([i.id, i.scope, i.value]);
         }
       });
@@ -26,23 +26,14 @@ export class ItemService {
     }
     return newItem;
   }
-/*
-  // add weapon to localstorage saved weapon list
-  public add(type: string, cItem: CompactItem): Observable<CompactItem> {
-    return this.db.addSave(type, cItem);
+
+  public addItem(type: string, item: Item): Observable<number> {
+    return this.db.addItem(type, this.compress(item));
   }
-*/
+
   // delete weapon in localstorage, leaving entry as null
   public delItem(idx: number) {
     this.db.delSave(idx);
-  }
-
-  public getSigils(): Item[] {
-    const retval = this.db.itemDb.sigils
-      .map(i => ({ id: i.id, i: [] }))
-      .map((cItem: CompactItem) => this.expand('sigils', cItem))
-      .map((i: Item) => { i.text = i.name; return i; });
-    return retval;
   }
 
   public getSavedItems(): Observable<any> {
@@ -84,7 +75,7 @@ export class ItemService {
               value: item[ivalue],
               stat: item[istat],
               scope: (item[iscope] === 'jav') ? 1 : 0,
-              png: (item[iscope] === 'jav') ? './assets/jav.png' : './assets/gear.png',
+              png: (item[iscope] === 'jav') ? 'jav.png' : 'gear.png',
             });
           }
         });
@@ -104,7 +95,7 @@ export class ItemService {
               value: item[ivalue],
               stat: item[istat],
               scope: (item[iscope] === 'jav') ? 1 : 0,
-              png: (item[iscope] === 'jav') ? './assets/jav.png' : './assets/gear.png',
+              png: (item[iscope] === 'jav') ? 'jav.png' : 'gear.png',
             });
           }
         });
@@ -119,7 +110,7 @@ export class ItemService {
     const retval = Object.assign({}, this.db.inscDb.find(i => i.id === insc[0]));
     retval.scope = insc[1];
     retval.value = insc[2];
-    retval.png = (insc[1]) ? './assets/jav.png' : './assets/gear.png';
+    retval.png = (insc[1]) ? 'jav.png' : 'gear.png';
     return retval;
   }
 

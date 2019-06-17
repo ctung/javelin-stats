@@ -4,6 +4,8 @@ import gear from './../assets/gear.json';
 import components from './../assets/components.json';
 import support from './../assets/support.json';
 import sigils from './../assets/sigils.json';
+import inscs from './../assets/inscriptions.json';
+import { Inscription } from './classes/inscription';
 import { Item, Items } from './classes/item';
 import { Javelins, Javelin } from './classes/javelin.js';
 import { ItemService } from './services/item.service';
@@ -13,6 +15,7 @@ import { take } from 'rxjs/operators';
 
 export interface JavStateModel {
     itemDb: Items;
+    inscs: Inscription[];
     javelins: Javelins;
     savedItems: Items;
     baseValues: {
@@ -60,10 +63,16 @@ export class DelItem {
     constructor(public type: string, public idx: number) { }
 }
 
+export class AddItem {
+    static readonly type = '[javelins] AddItem';
+    constructor(public type: string, public item: Item) { }
+}
+
 @State<JavStateModel>({
     name: 'javelins',
     defaults: {
         itemDb: { weap: weapons, gear, comp: components, supp: support, sigils },
+        inscs,
         savedItems: new Items(),
         javelins: new Javelins(),
         baseValues: {
@@ -164,11 +173,26 @@ export class JavState {
 
     @Action(DelItem)
     DelItem(ctx: StateContext<JavStateModel>, action: DelItem) {
-        const state = JSON.parse(JSON.stringify(ctx.getState()));
-        const items = state.savedItems;
+        const items = JSON.parse(JSON.stringify(ctx.getState().savedItems));
         items[action.type] = items[action.type].filter(item => item.idx !== action.idx);
         ctx.patchState({ savedItems: items });
         this.itemService.delItem(action.idx);
         localStorage.setItem('items', JSON.stringify(items));
+    }
+
+    @Action(AddItem)
+    AddItem(ctx: StateContext<JavStateModel>, action: AddItem) {
+        console.log(action.item);
+        const items = JSON.parse(JSON.stringify(ctx.getState().savedItems));
+        this.itemService.addItem(action.type, action.item).pipe(take(1))
+            .subscribe(idx => {
+                if (idx) {
+                action.item.idx = idx;
+                items[action.type] = items[action.type].filter(obj => obj.idx !== action.item.idx);
+                items[action.type].push(action.item);
+                ctx.patchState({ savedItems: items });
+                localStorage.setItem('items', JSON.stringify(items));
+            }});
+
     }
 }

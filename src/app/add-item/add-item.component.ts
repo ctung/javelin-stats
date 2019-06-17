@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { ItemService } from '../services/item.service';
-import { DatabaseService } from '../services/database.service';
-import { CompactItem, Item } from '../classes/item';
-import { take, debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { JavelinService } from '../services/javelin.service';
+import { Item } from '../classes/item';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { Store } from '@ngxs/store';
+import { Inscription } from '../classes/inscription';
+import { AddItem } from '../jav.state';
 
 @Component({
   selector: 'app-add-item',
@@ -15,75 +15,43 @@ import { map } from 'rxjs/operators';
 })
 export class AddItemComponent implements OnInit {
   type: string;
-  typeLongName: string;
-  items: any[];
-  item: CompactItem;
   itemDetails: Item;
-  scopes: any[];
-  inscRange: number[];
+  typeLongName: string;
+  items: Item[];
+  inscs: Inscription[];
+  item: Item;
   longNames = { weap: 'Weapon', gear: 'Gear', comp: 'Component', supp: 'Support', sigils: 'Sigils' };
   mode: string;
-  inscs: any[];
 
   itemModel: any;
   inscModel: any[];
   inscVals: number[];
 
   constructor(
-    private itemService: ItemService,
-    private db: DatabaseService,
     public activeModal: NgbActiveModal,
-    private javelinService: JavelinService
-  ) {
-    this.mode = 'Add';
-    this.scopes = [
-      { id: 1, img: '../assets/jav.png' },
-      { id: 1, img: '../assets/jav.png' },
-      { id: 1, img: '../assets/jav.png' },
-      { id: 1, img: '../assets/jav.png' }
-    ];
-    this.inscModel = [null, null, null, null];
-    this.inscVals = [null, null, null, null];
-  }
+    private store: Store
+  ) { }
 
   ngOnInit() {
     this.typeLongName = this.longNames[this.type];
 
-    this.items = this.db.itemDb[this.type]
+    this.items = JSON.parse(JSON.stringify(this.store.snapshot().javelins.itemDb[this.type]))
       .sort((a, b) => (a.name > b.name) ? 1 : -1)
       .map((e: Item) => { e.text = e.name; return e; });
 
-    this.inscs = this.db.inscDb
+    this.inscs = JSON.parse(JSON.stringify(this.store.snapshot().javelins.inscs))
       .filter(i => i.deprecated !== true)
-      .map(i => ({ id: i.id, text: i.type + ' ' + i.stat.replace('(blank)', '') }))
+      .map(i => { i.text = i.type + ' ' + i.stat.replace('(blank)', ''); return i; })
       .sort((a, b) => (a.text > b.text) ? 1 : -1);
 
-
-    if (this.type === 'comp') {
-      this.inscRange = [0, 1];
-    } else {
-      this.inscRange = [0, 1, 2, 3];
-    }
-
-    // initialize item and inscription pulldowns
-    this.item = { idx: -1, id: null, i: [] };
-    this.inscRange.forEach(() => {
-      this.item.i.push([]);
-    });
-
-    // initialize all the fields if we're doing an edit
     if (this.itemDetails) {
+      // initialize all the fields if we're doing an edit
       this.mode = 'Edit';
-      this.item.idx = this.itemDetails.idx;
-      this.itemModel = Object.assign({}, this.itemDetails);
-
-      for (let i = 0; i < this.itemDetails.inscs.length; i++) {
-        const insc = this.itemDetails.inscs[i];
-        // console.log(insc);
-        this.setScope(i, insc.scope);
-        this.inscModel[i] = { id: insc.id, text: insc.type + ' ' + insc.stat.replace('(blank)', '') };
-        this.inscVals[i] = insc.value;
-      }
+      this.item = JSON.parse(JSON.stringify(this.itemDetails));
+    } else {
+      // initialize item and inscription pulldowns
+      this.mode = 'Add';
+      this.item = new Item(this.type);
     }
 
   }
@@ -106,27 +74,31 @@ export class AddItemComponent implements OnInit {
       )
     )
 
-  public formatter = (x: { text: string }) => x.text;
+  formatter = (x: { text: string }) => x.text;
 
-  setScope(i: number, scope: number) {
-    this.scopes[i].id = scope;
-    this.scopes[i].img = (this.scopes[i].id === 0) ? '../assets/gear.png' : '../assets/jav.png';
+  toggleScope(insc: Inscription) {
+    insc.scope = insc.scope ? 0 : 1;
+    insc.png = (insc.scope === 0) ? 'gear.png' : 'jav.png';
   }
-  toggleScope(i: number) {
-    this.setScope(i, this.scopes[i].id ? 0 : 1);
+
+  // when the user selects a new inscription name
+  changeInsc(evt: any, insc: Inscription) {
+    const newInsc = this.inscs.find(obj => obj.id === evt.item.id);
+    delete newInsc.value;
+    delete newInsc.scope;
+    delete newInsc.png;
+    insc = Object.assign(insc, newInsc);
+  }
+
+  // when the user selects a new item name in the form
+  changeItem(evt: any) {
+    delete evt.item.inscs;
+    this.item = Object.assign(this.item, evt.item);
   }
 
   addItem() {
-    this.item.id = this.itemModel.id;
-    const newInscs = [];
-    this.inscRange.forEach(i => {
-      if (this.inscModel[i] !== null && this.inscVals[i] != null) {
-        newInscs.push([this.inscModel[i].id, this.scopes[i].id, this.inscVals[i]]);
-      }
-    });
-    this.item.i = newInscs;
-    this.itemService.add(this.type, this.item).pipe(take(1))
-      .subscribe(d => this.javelinService.updateJavItems(this.type, d));
+    this.item.inscs = this.item.inscs.filter(i => i.id !== null);
+    this.store.dispatch(new AddItem(this.type, this.item));
     this.activeModal.close();
   }
 

@@ -2,14 +2,14 @@
   <div class="relative" (click)="selItem()">
     <div class="row my-1">
       <h5 class="card-title col-8 my-1">{{ (item$|async)?.name || 'Empty'}}
-        <img class="comboImg" *ngIf="(item$|async)?.combo === 'Primer'" src="../assets/primer.png">
-        <img class="comboImg" *ngIf="(item$|async)?.combo === 'Detonator'" src="../assets/detonator.png">
+        <img class="comboImg" *ngIf="(item$|async)?.combo === 'Primer'" src="../../assets/primer.png">
+        <img class="comboImg" *ngIf="(item$|async)?.combo === 'Detonator'" src="../../assets/detonator.png">
       </h5>
       <h5 class="card-title col-4 my-1 text-right">{{slotName}}</h5>
     </div>
     <div class="row my-1">
       <div class="col-6 px-3 inscText" *ngFor="let i of (item$|async)?.inscs">
-        <img src="{{i.png}}" /> {{ i.value }}% {{ i.type }} {{ i.stat === '(blank)' ? '' : i.stat }}
+        <img src="../../assets/{{i.png}}" /> {{ i.value }}% {{ i.type }} {{ i.stat === '(blank)' ? '' : i.stat }}
       </div>
     </div>
   </div>
@@ -20,7 +20,7 @@
         <div class="row">
           <div class="col-6 px-2"><b>{{(item$|async).buff}}</b></div>
           <div class="col-6 px-3 inscText" *ngFor="let i of (item$|async).buffDetails">
-            <img src="{{i.png}}" />
+            <img src="../../assets/{{i.png}}" />
             <span [ngClass]="(item$|async).bactive ? 'null' : 'strikethrough'">
               {{ i.value }}% {{ i.type }} {{ i.stat === '(blank)' ? '' : i.stat }}</span>
           </div>

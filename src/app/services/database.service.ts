@@ -59,29 +59,16 @@ export class DatabaseService {
       }
     };
   }
-/*
-  public addSave(type: string, cItem: CompactItem): Observable<CompactItem> {
-    const newSaved = this.saved.value;
+
+  // add item, return db index
+  public addItem(type: string, cItem: CompactItem): Observable<number> {
     if (this.isAuthenticated) {
       return this.http.post(environment.rest_api + '/items', { type, item: cItem }).pipe(
-        map((data: CompactItem) => ({ idx: +data.idx, id: +data.id, i: data.i })),
-        tap((item: CompactItem) => this.updateDb(type, item))
+        map((data: CompactItem) => +data.idx)
       );
-    } else {
-      if (cItem.idx >= 0) {
-        this.delSave(type, cItem.idx);
-      } else {
-        let max = 0;
-        newSaved[type].forEach(i => { if (i.idx >= max) { max = i.idx + 1; } });
-        cItem.idx = max;
-      }
-      newSaved[type].push(cItem);
-      this.saved.next(newSaved);
-      localStorage.setItem('items', JSON.stringify(newSaved));
-      return of(cItem);
     }
   }
-*/
+
   // delete item
   public delSave(idx: number) {
     if (this.isAuthenticated) {
