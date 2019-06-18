@@ -4,7 +4,7 @@ import { Item } from '../classes/item';
 import { Observable, Subject, merge } from 'rxjs';
 import { debounceTime, map, distinctUntilChanged, filter } from 'rxjs/operators';
 import { Store } from '@ngxs/store';
-import { SetJavItem } from '../jav.state';
+import { SetJavItem } from '../jav.actions';
 
 
 @Component({

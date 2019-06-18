@@ -9,7 +9,7 @@
     <div class="row py-0 justify-content-center">
       <div class="col-12 col-md-8 form-group py-1 px-4">
         <input name="itemName" class="form-control" type="text" [ngbTypeahead]="searchItem" [inputFormatter]="formatter"
-          [resultFormatter]="formatter" placeholder="Select Item" (selectItem)="changeItem($event)"/>
+          [resultFormatter]="formatter" placeholder="Select Item" (selectItem)="changeItem($event)" [value]="item.name"/>
       </div>
     </div>
     <div *ngFor="let insc of item.inscs; index as i" class="row py-0 justify-content-center">
@@ -21,7 +21,7 @@
           <input name="{{'val' + i}}" class="form-control" [(ngModel)]="insc.value" type="number" placeholder="Value">
           <div class="input-group-append">
             <input name="{{'insc' + i}}" class="form-control" type="text" [ngbTypeahead]="searchInscs" [inputFormatter]="formatter"
-              [resultFormatter]="formatter" (selectItem)="changeInsc($event, insc)" />
+              [resultFormatter]="formatter" (selectItem)="changeInsc($event, insc)" [value]="insc.text" />
           </div>
         </div>
       </div>

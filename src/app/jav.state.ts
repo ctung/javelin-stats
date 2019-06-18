@@ -1,4 +1,4 @@
-import { State, Action, StateContext } from '@ngxs/store';
+import { State, Action, StateContext, Selector } from '@ngxs/store';
 import weapons from '../assets/weapons.json';
 import gear from './../assets/gear.json';
 import components from './../assets/components.json';
@@ -6,12 +6,23 @@ import support from './../assets/support.json';
 import sigils from './../assets/sigils.json';
 import inscs from './../assets/inscriptions.json';
 import { Inscription } from './classes/inscription';
-import { Item, Items } from './classes/item';
+import { Items } from './classes/item';
+import { Stats } from './classes/stats';
 import { Javelins, Javelin } from './classes/javelin.js';
 import { ItemService } from './services/item.service';
-import { DatabaseService } from './services/database.service';
 import { JavelinService } from './services/javelin.service';
 import { take } from 'rxjs/operators';
+import {
+    InitStore,
+    SelJav,
+    SetJavItem,
+    SetJavName,
+    ToggleBuff,
+    ToggleDebuff,
+    ResetJav,
+    DelItem,
+    AddItem
+} from './jav.actions';
 
 export interface JavStateModel {
     itemDb: Items;
@@ -26,46 +37,9 @@ export interface JavStateModel {
     };
     selected: {
         javClass: string,
-        javSlot: number,
+        javSlot: number
     };
-}
-
-export class InitStore {
-    static readonly type = '[app] InitStore';
-}
-
-export class SelJav {
-    static readonly type = '[javelins] SelJav';
-    constructor(public javClass: string, public javSlot: number) { }
-}
-
-export class SetJavItem {
-    static readonly type = '[equipped] SetJavItem';
-    constructor(public type: string, public slot: number, public item: Item) { }
-}
-
-export class SetJavName {
-    static readonly type = '[stats] SetJavName';
-    constructor(public name: string) { }
-}
-
-export class ToggleBuff {
-    static readonly type = '[equipped] ToggleBuff';
-    constructor(public type: string, public slot: number) { }
-}
-
-export class ResetJav {
-    static readonly type = '[javelins] ResetJav';
-}
-
-export class DelItem {
-    static readonly type = '[inventory] DelItem';
-    constructor(public type: string, public idx: number) { }
-}
-
-export class AddItem {
-    static readonly type = '[javelins] AddItem';
-    constructor(public type: string, public item: Item) { }
+    stats: Stats;
 }
 
 @State<JavStateModel>({
@@ -107,8 +81,9 @@ export class AddItem {
         },
         selected: {
             javClass: null,
-            javSlot: null,
-        }
+            javSlot: null
+        },
+        stats: new Stats()
     }
 })
 
@@ -116,9 +91,26 @@ export class JavState {
 
     constructor(
         private itemService: ItemService,
-        private db: DatabaseService,
         private javelinService: JavelinService
     ) { }
+
+    @Selector()
+    static selectedJav(state: JavStateModel) {
+        return state.javelins[state.selected.javClass][state.selected.javSlot];
+    }
+
+    @Selector()
+    static selectedStats(state: JavStateModel) {
+        return state.stats[state.selected.javClass][state.selected.javSlot];
+    }
+
+    @Selector()
+    static selectedItem(state: JavStateModel) {
+        return (type: string, slot: number) => {
+            return state.javelins[state.selected.javClass][state.selected.javSlot][type][slot];
+        };
+    }
+
 
     @Action(InitStore)
     InitStore(ctx: StateContext<JavStateModel>) {
@@ -130,7 +122,12 @@ export class JavState {
 
     @Action(SelJav)
     SelJav(ctx: StateContext<JavStateModel>, action: SelJav) {
-        ctx.patchState({ selected: { javClass: action.javClass, javSlot: action.javSlot } });
+        ctx.patchState({
+            selected: {
+                javClass: action.javClass,
+                javSlot: action.javSlot
+            }
+        });
     }
 
     @Action(SetJavItem)
@@ -158,6 +155,14 @@ export class JavState {
         this.javelinService.save(state.javelins);
     }
 
+    @Action(ToggleDebuff)
+    ToggleDebuff(ctx: StateContext<JavStateModel>, action: ToggleBuff) {
+        const state = JSON.parse(JSON.stringify(ctx.getState()));
+        const jav = state.javelins[state.selected.javClass][state.selected.javSlot];
+        jav.debuff[action.type] = jav.debuff[action.type] === 0 ? 1 : 0;
+        ctx.setState(state);
+    }
+
     @Action(ResetJav)
     ResetJav(ctx: StateContext<JavStateModel>) {
         const state = JSON.parse(JSON.stringify(ctx.getState()));
@@ -182,17 +187,17 @@ export class JavState {
 
     @Action(AddItem)
     AddItem(ctx: StateContext<JavStateModel>, action: AddItem) {
-        console.log(action.item);
         const items = JSON.parse(JSON.stringify(ctx.getState().savedItems));
         this.itemService.addItem(action.type, action.item).pipe(take(1))
             .subscribe(idx => {
                 if (idx) {
-                action.item.idx = idx;
-                items[action.type] = items[action.type].filter(obj => obj.idx !== action.item.idx);
-                items[action.type].push(action.item);
-                ctx.patchState({ savedItems: items });
-                localStorage.setItem('items', JSON.stringify(items));
-            }});
+                    action.item.idx = idx;
+                    items[action.type] = items[action.type].filter(obj => obj.idx !== action.item.idx);
+                    items[action.type].push(action.item);
+                    ctx.patchState({ savedItems: items });
+                    localStorage.setItem('items', JSON.stringify(items));
+                }
+            });
 
     }
 }

@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { AddItemComponent } from '../../add-item/add-item.component';
 import { Store } from '@ngxs/store';
-import { DelItem } from 'src/app/jav.state';
+import { DelItem } from 'src/app/jav.actions';
 
 @Component({
   selector: 'app-inventory-list',

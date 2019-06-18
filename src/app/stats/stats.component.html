@@ -1,8 +1,8 @@
-<div *ngIf="jav.value && initialized">
+<div *ngIf="(jav$|async)">
   <div class="card mt-3 border-secondary bg-secondary">
     <h5 class="card-header p-2 dark-yellow">
       <label class="my-0">Loadout Name:
-        <input class="loadoutName" [ngModel]="jav.value.name" placeholder="name" (change)="changeName($event)" />
+        <input class="loadoutName" [ngModel]="(jav$|async).name" placeholder="name" (change)="changeName($event)" />
       </label>
     </h5>
 
@@ -46,3 +46,4 @@
   </div>
   <!--<pre *ngIf="devMode">{{ stats | json }}</pre>-->
 </div>
+{{stats$ | async | json}}

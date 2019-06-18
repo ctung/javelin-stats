@@ -222,12 +222,6 @@ export class JavelinService {
     document.body.removeChild(selBox);
   }
 
-  public toggleDebuff(jav: BehaviorSubject<CompactJavelin>, type: string, value: boolean) {
-    const newValue = this.javelins.value;
-    newValue[jav.value.class][jav.value.slot].debuffs[type] = value;
-    this.javelins.next(newValue);
-  }
-
   // NGXS stuff below
 
   public getJavelins(): Observable<any> {

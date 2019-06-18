@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DatabaseService } from './services/database.service';
 import { AuthService } from './services/auth.service';
 import { Store } from '@ngxs/store';
-import { InitStore } from './jav.state';
+import { InitStore } from './jav.actions';
 
 @Component({
   selector: 'app-root',

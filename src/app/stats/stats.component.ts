@@ -1,13 +1,13 @@
-import { Component, Input, OnInit, isDevMode } from '@angular/core';
-import { CompactJavelin } from '../classes/javelin';
-import { JavelinService } from '../services/javelin.service';
-import { BehaviorSubject } from 'rxjs';
-import { ItemService } from '../services/item.service';
+import { Component, OnInit, isDevMode } from '@angular/core';
+import { Javelin } from '../classes/javelin';
 import { Inscription } from '../classes/inscription';
 import { Item } from '../classes/item';
-import { DatabaseService } from '../services/database.service';
-import { Store } from '@ngxs/store';
-import { SetJavName } from '../jav.state';
+import { Store, Select } from '@ngxs/store';
+import { SetJavName, ToggleDebuff } from '../jav.actions';
+import { JavState } from '../jav.state';
+import { Observable } from 'rxjs';
+import { JavStats } from '../classes/stats';
+
 
 @Component({
   selector: 'app-stats',
@@ -15,7 +15,6 @@ import { SetJavName } from '../jav.state';
   styleUrls: ['./stats.component.css']
 })
 export class StatsComponent implements OnInit {
-  @Input() jav: BehaviorSubject<CompactJavelin>;
   stats: any;
   armor: number;
   shield: number;
@@ -33,21 +32,20 @@ export class StatsComponent implements OnInit {
   devMode: boolean;
   javClass: string;
   javSlot: number;
-
+  @Select(JavState.selectedJav) jav$: Observable<Javelin>;
+  @Select(JavState.selectedStats) stats$: Observable<JavStats>;
 
   constructor(
-    private javelinService: JavelinService,
-    private itemService: ItemService,
-    private db: DatabaseService,
     private store: Store
   ) {
     this.devMode = isDevMode();
   }
 
   ngOnInit() {
-
-    this.jav.subscribe(() => {
-      this.stats = this.itemService.initStats();
+    // this.jav.subscribe(() => {
+    /*
+    this.store.select(state => state).subscribe(s => {
+      this.stats = this.initStats();
       this.initialized = true;
       this.resist = 0;
       this.gearscore = 0;
@@ -55,28 +53,25 @@ export class StatsComponent implements OnInit {
       this.shield = 0;
       this.weapStats = [];
 
-
-      if (this.jav.value) {
-        this.javClass = this.jav.value.class;
-        this.javSlot = this.jav.value.slot;
-        if ('debuffs' in this.jav.value) {
-          if (this.jav.value.debuffs.beacon) { this.resist -= 33; }
-          if (this.jav.value.debuffs.acid) { this.resist -= 25; }
+      if (this.jav) {
+        if ('debuffs' in this.jav) {
+          if (this.jav.debuffs.beacon) { this.resist -= 33; }
+          if (this.jav.debuffs.acid) { this.resist -= 25; }
         }
         // console.log(this.jav.value);
-        this.parseItemInscriptions(this.jav.value);
+        this.parseItemInscriptions(this.jav);
         this.stats.jav.Repair['Drop Rate'] += this.stats.jav.Resupply['Drop Rate'];
         this.stats.jav.Ammo['Drop Rate'] += this.stats.jav.Resupply['Drop Rate'];
         this.stats.jav.All.Damage += this.stats.jav.Damage['(blank)'];
         this.stats.jav.Critical.Damage += this.stats.jav['Weak Point'].Damage;
 
 
-        this.weapStats = this.calcWeapStats(this.jav.value);
-        this.gearStats = this.calcGearStats(this.jav.value);
+        this.weapStats = this.calcWeapStats(this.jav);
+        this.gearStats = this.calcGearStats(this.jav);
         // console.log(this.weapStats);
 
-        this.shield = Math.round((this.db.baseValues[this.jav.value.class].shield + this.shield) * (100 + this.stats.jav.Shield.Max) / 100);
-        this.armor = Math.round((this.db.baseValues[this.jav.value.class].armor + this.armor) * (100 + this.stats.jav.Armor.Max) / 100);
+        this.shield = Math.round((this.db.baseValues[this.jav.class].shield + this.shield) * (100 + this.stats.jav.Shield.Max) / 100);
+        this.armor = Math.round((this.db.baseValues[this.jav.class].armor + this.armor) * (100 + this.stats.jav.Armor.Max) / 100);
 
       }
       // this.formatValues();
@@ -110,7 +105,7 @@ export class StatsComponent implements OnInit {
         ['Thruster Cooldown:', this.stats.jav.Thruster.Cooldown + '%'],
       ];
 
-      this.dmgStats = this.calcMeleeStats(this.jav.value);
+      this.dmgStats = this.calcMeleeStats(this.jav);
       this.dmgStats = this.dmgStats.concat([
         ['Kinetic Dmg:', this.stats.jav.Kinetic.Damage + this.stats.jav.Physical.Damage + this.stats.jav.All.Damage + '%'],
         ['Kinetic Resist:', this.stats.jav.Kinetic.Resist + this.stats.jav.Physical.Resist + this.stats.jav.Damage.Resist + '%'],
@@ -132,10 +127,35 @@ export class StatsComponent implements OnInit {
       ]);
 
     });
+  */
+  }
+
+  /*
+  public initStats(): any {
+    const stats = {
+      jav: {},
+      weap: [{}, {}],
+      gear: [{}, {}],
+      comp: [{}, {}, {}, {}, {}, {}],
+      supp: [{}]
+    };
+    this.db.inscDb.forEach(i => {
+      this.initStat(stats.jav, i);
+      [0, 1].forEach(j => this.initStat(stats.weap[j], i));
+      [0, 1].forEach(j => this.initStat(stats.gear[j], i));
+      [0, 1, 2, 3, 4, 5].forEach(j => this.initStat(stats.comp[j], i));
+      this.initStat(stats.supp[0], i);
+    });
+    return stats;
+  }
+
+  private initStat(k, i) {
+    if (!(i.type in k)) { k[i.type] = {}; }
+    k[i.type][i.stat || ''] = 0;
   }
 
 
-  private calcMeleeStats(jav: CompactJavelin): any[] {
+  private calcMeleeStats(jav: Javelin): any[] {
     const wstats = [];
     if (jav && 'class' in jav) {
       const pwrMult = 2 ** ((Math.round(this.gearscore / 11) - 1) / 10);
@@ -151,11 +171,11 @@ export class StatsComponent implements OnInit {
     return wstats;
   }
 
-  private calcWeapStats(jav: CompactJavelin): any[] {
+  private calcWeapStats(jav: Javelin): any[] {
     const stats = [];
     for (let idx = 0; idx < jav.weap.length; idx++) {
       if (jav.weap[idx] == null) { continue; }
-      const item = this.itemService.expand('weap', jav.weap[idx]);
+      const item = jav.weap[idx];
       const wstats = this.calcDmg(item, 'weap', idx);
 
       const baseClip = item.clip;
@@ -180,11 +200,11 @@ export class StatsComponent implements OnInit {
     return stats;
   }
 
-  private calcGearStats(jav: CompactJavelin): any[] {
+  private calcGearStats(jav: Javelin): any[] {
     const stats = [];
     for (let idx = 0; idx < jav.gear.length; idx++) {
       if (jav.gear[idx] == null) { continue; }
-      const item = this.itemService.expand('gear', jav.gear[idx]);
+      const item = jav.gear[idx];
       const gstats = this.calcDmg(item, 'gear', idx);
 
       const baseCharges = item.charges;
@@ -285,11 +305,11 @@ export class StatsComponent implements OnInit {
   }
 
   // read the inscriptions on items and aggregate them onto this.stats
-  private parseItemInscriptions(jav: CompactJavelin) {
+  private parseItemInscriptions(jav: Javelin) {
     ['weap', 'gear', 'comp', 'supp', 'sigils'].forEach(type => {
       for (let idx = 0; idx < jav[type].length; idx++) {
         if (jav[type][idx] == null) { continue; }
-        const item = this.itemService.expand(type, jav[type][idx]);
+        const item = jav[type][idx];
 
         // gearscore
         this.gearscore += item.power || 0;
@@ -327,13 +347,14 @@ export class StatsComponent implements OnInit {
       stat[insc.type][insc.stat || ''] = (stat[insc.type][insc.stat || ''] || 0) + insc.value;
     }
   }
+  */
 
   changeName(evt: any) {
     this.store.dispatch(new SetJavName(evt.target.value));
   }
 
   updateDebuff(type: string) {
-    this.javelinService.toggleDebuff(this.jav, type, !this.jav.value.debuffs[type]);
+    this.store.dispatch(new ToggleDebuff(type));
   }
 
 }

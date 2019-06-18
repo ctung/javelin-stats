@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Item, CompactItem } from '../classes/item';
 import { Inscription } from '../classes/inscription';
 import { DatabaseService } from '../services/database.service';
-import { map, take } from 'rxjs/operators';
+import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
 @Injectable()
@@ -112,29 +112,6 @@ export class ItemService {
     retval.value = insc[2];
     retval.png = (insc[1]) ? 'jav.png' : 'gear.png';
     return retval;
-  }
-
-  public initStats(): any {
-    const stats = {
-      jav: {},
-      weap: [{}, {}],
-      gear: [{}, {}],
-      comp: [{}, {}, {}, {}, {}, {}],
-      supp: [{}]
-    };
-    this.db.inscDb.forEach(i => {
-      this.initStat(stats.jav, i);
-      [0, 1].forEach(j => this.initStat(stats.weap[j], i));
-      [0, 1].forEach(j => this.initStat(stats.gear[j], i));
-      [0, 1, 2, 3, 4, 5].forEach(j => this.initStat(stats.comp[j], i));
-      this.initStat(stats.supp[0], i);
-    });
-    return stats;
-  }
-
-  private initStat(k, i) {
-    if (!(i.type in k)) { k[i.type] = {}; }
-    k[i.type][i.stat || ''] = 0;
   }
 
 }

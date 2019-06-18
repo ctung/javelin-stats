@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Store } from '@ngxs/store';
 import { Inscription } from '../classes/inscription';
-import { AddItem } from '../jav.state';
+import { AddItem } from '../jav.actions';
 
 @Component({
   selector: 'app-add-item',
@@ -48,12 +48,12 @@ export class AddItemComponent implements OnInit {
       // initialize all the fields if we're doing an edit
       this.mode = 'Edit';
       this.item = JSON.parse(JSON.stringify(this.itemDetails));
+      this.item.inscs = this.item.inscs.map((i: Inscription) => { i.text = i.type + ' ' + i.stat.replace('(blank)', ''); return i; });
     } else {
       // initialize item and inscription pulldowns
       this.mode = 'Add';
       this.item = new Item(this.type);
     }
-
   }
 
   searchItem = (text$: Observable<string>) =>
@@ -64,7 +64,6 @@ export class AddItemComponent implements OnInit {
         : this.items.filter(v => v.text.toLowerCase().indexOf(term.toLowerCase()) > -1)
       )
     )
-
 
   searchInscs = (text$: Observable<string>) =>
     text$.pipe(
@@ -96,6 +95,7 @@ export class AddItemComponent implements OnInit {
     this.item = Object.assign(this.item, evt.item);
   }
 
+  // when the user hits submit from add item / edit item page
   addItem() {
     this.item.inscs = this.item.inscs.filter(i => i.id !== null);
     this.store.dispatch(new AddItem(this.type, this.item));

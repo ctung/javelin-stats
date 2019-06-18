@@ -6,7 +6,7 @@ import { AddItemComponent } from '../add-item/add-item.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { take } from 'rxjs/operators';
 import { Store } from '@ngxs/store';
-import { SelJav, ResetJav } from '../jav.state';
+import { SelJav, ResetJav } from '../jav.actions';
 
 @Component({
   selector: 'app-javelins',
