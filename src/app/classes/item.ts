@@ -30,6 +30,7 @@ export class Item {
     rarity?: string;
     type?: string;
     inscs?: Inscription[];
+    baseInscs?: Inscription[];
     class: string;
     base?: string;
     description?: string;
@@ -104,7 +105,9 @@ export class Item {
         const inscRange = (type === 'comp') ? [0, 1] : [0, 1, 2, 3];
         this.id = -1;
         this.name = null;
-        this.inscs = inscRange.map(i => new Inscription());
+        // this.inscs = inscRange.map(i => new Inscription());
+        this.inscs = [];
+        this.baseInscs = [];
         this.class = 'universal';
         this.type = type;
     }

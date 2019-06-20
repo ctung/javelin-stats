@@ -7,26 +7,26 @@
     </h5>
 
     <ul class="list-group list-group-flush">
-      <app-basic-stat [stats]="armorStats"></app-basic-stat>
-      <app-basic-stat [stats]="shieldStats"></app-basic-stat>
-      <app-basic-stat [stats]="dmgStats"></app-basic-stat>
-      <app-basic-stat [stats]="suppStats" [last]="true"></app-basic-stat>
+      <app-basic-stat stats="armorStats"></app-basic-stat>
+      <app-basic-stat stats="shieldStats"></app-basic-stat>
+      <app-basic-stat stats="dmgStats"></app-basic-stat>
+      <app-basic-stat stats="suppStats" [last]="true"></app-basic-stat>
     </ul>
   </div>
-
+<!--
   <div class="card mt-3 border-secondary bg-secondary">
     <h5 class="card-header p-2 dark-yellow">Weapon Stats</h5>
     <ul class="list-group list-group-flush">
-      <app-basic-stat [stats]="weapStats[0]"></app-basic-stat>
-      <app-basic-stat [stats]="weapStats[1]" [last]="true"></app-basic-stat>
+      <app-basic-stat [stats$]="weapStats[0]"></app-basic-stat>
+      <app-basic-stat [stats$]="weapStats[1]" [last]="true"></app-basic-stat>
     </ul>
   </div>
 
   <div class="card mt-3 border border-secondary bg-secondary">
     <h5 class="card-header p-2 dark-yellow">Gear Stats</h5>
     <ul class="list-group list-group-flush">
-      <app-basic-stat [stats]="gearStats[0]"></app-basic-stat>
-      <app-basic-stat [stats]="gearStats[1]" [last]="true"></app-basic-stat>
+      <app-basic-stat [stats$]="gearStats[0]"></app-basic-stat>
+      <app-basic-stat [stats$]="gearStats[1]" [last]="true"></app-basic-stat>
     </ul>
   </div>
 
@@ -44,6 +44,6 @@
       </div>
     </div>
   </div>
+  -->
   <!--<pre *ngIf="devMode">{{ stats | json }}</pre>-->
 </div>
-{{stats$ | async | json}}

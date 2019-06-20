@@ -1,9 +1,10 @@
-<li *ngIf="stats" class="list-group-item border-secondary border-top bg-grey py-1 px-2"
+<li *ngIf="(stats$|async)" class="list-group-item border-secondary border-top bg-grey py-1 px-2"
  [class.rounded-0]="last!==true">
-  <h5 class="card-title my-1">{{stats[0][0]}} {{stats[0][1]}}</h5>
+  <h5 class="card-title my-1">{{(stats$|async)[0][0]}} {{(stats$|async)[0][1]}}</h5>
   <div class="row">
-    <div class="col-6 px-3 inscText" *ngFor="let stat of stats | slice:1">
+    <div class="col-6 px-3 inscText" *ngFor="let stat of stats$ | async | slice:1">
       {{stat[0]}} {{stat[1]}}
     </div>
   </div>
 </li>
+

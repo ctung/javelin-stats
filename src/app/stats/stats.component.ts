@@ -1,22 +1,19 @@
-import { Component, OnInit, isDevMode } from '@angular/core';
+import { Component, isDevMode } from '@angular/core';
 import { Javelin } from '../classes/javelin';
-import { Inscription } from '../classes/inscription';
-import { Item } from '../classes/item';
 import { Store, Select } from '@ngxs/store';
 import { SetJavName, ToggleDebuff } from '../jav.actions';
 import { JavState } from '../jav.state';
 import { Observable } from 'rxjs';
-import { JavStats } from '../classes/stats';
-
 
 @Component({
   selector: 'app-stats',
   templateUrl: './stats.component.html',
   styleUrls: ['./stats.component.css']
 })
-export class StatsComponent implements OnInit {
+export class StatsComponent {
+  /*
   stats: any;
-  armor: number;
+  armor = 0;
   shield: number;
   gearscore: number;
   aGS: number;
@@ -29,11 +26,11 @@ export class StatsComponent implements OnInit {
   gearStats: any[];
   resist: number;
   initialized: boolean;
-  devMode: boolean;
   javClass: string;
   javSlot: number;
+  */
+  devMode: boolean;
   @Select(JavState.selectedJav) jav$: Observable<Javelin>;
-  @Select(JavState.selectedStats) stats$: Observable<JavStats>;
 
   constructor(
     private store: Store
@@ -41,135 +38,43 @@ export class StatsComponent implements OnInit {
     this.devMode = isDevMode();
   }
 
-  ngOnInit() {
-    // this.jav.subscribe(() => {
-    /*
-    this.store.select(state => state).subscribe(s => {
-      this.stats = this.initStats();
-      this.initialized = true;
-      this.resist = 0;
-      this.gearscore = 0;
-      this.armor = 0;
-      this.shield = 0;
-      this.weapStats = [];
+  // ngOnInit() {
+  // this.jav.subscribe(() => {
+  /*
+  this.store.select(state => state).subscribe(s => {
+    this.weapStats = [];
 
-      if (this.jav) {
-        if ('debuffs' in this.jav) {
-          if (this.jav.debuffs.beacon) { this.resist -= 33; }
-          if (this.jav.debuffs.acid) { this.resist -= 25; }
-        }
-        // console.log(this.jav.value);
-        this.parseItemInscriptions(this.jav);
-        this.stats.jav.Repair['Drop Rate'] += this.stats.jav.Resupply['Drop Rate'];
-        this.stats.jav.Ammo['Drop Rate'] += this.stats.jav.Resupply['Drop Rate'];
-        this.stats.jav.All.Damage += this.stats.jav.Damage['(blank)'];
-        this.stats.jav.Critical.Damage += this.stats.jav['Weak Point'].Damage;
+    if (this.jav) {
+      this.weapStats = this.calcWeapStats(this.jav);
+      this.gearStats = this.calcGearStats(this.jav);
+    }
 
+    this.dmgStats = this.calcMeleeStats(this.jav);
+    this.dmgStats = this.dmgStats.concat([
+      ['Kinetic Dmg:', this.stats.jav.Kinetic.Damage + this.stats.jav.Physical.Damage + this.stats.jav.All.Damage + '%'],
+      ['Kinetic Resist:', this.stats.jav.Kinetic.Resist + this.stats.jav.Physical.Resist + this.stats.jav.Damage.Resist + '%'],
+      ['Acid Dmg:', this.stats.jav.Acid.Damage + this.stats.jav.Physical.Damage + this.stats.jav.All.Damage + '%'],
+      ['Acid Resist:', this.stats.jav.Acid.Resist + this.stats.jav.Physical.Resist + this.stats.jav.Damage.Resist + '%'],
+      ['Elec Dmg:', this.stats.jav.Elec.Damage + this.stats.jav.Elemental.Damage + this.stats.jav.All.Damage + '%'],
+      ['Elec Resist:', this.stats.jav.Elec.Resist + this.stats.jav.Elemental.Resist + this.stats.jav.Damage.Resist + '%'],
+      ['Fire Dmg:', this.stats.jav.Fire.Damage + this.stats.jav.Elemental.Damage + this.stats.jav.All.Damage + '%'],
+      ['Fire Resist:', this.stats.jav.Fire.Resist + this.stats.jav.Elemental.Resist + this.stats.jav.Damage.Resist + '%'],
+      ['Ice Dmg:', this.stats.jav.Ice.Damage + this.stats.jav.Elemental.Damage + this.stats.jav.All.Damage + '%'],
+      ['Ice Resist:', this.stats.jav.Ice.Resist + this.stats.jav.Elemental.Resist + this.stats.jav.Damage.Resist + '%'],
+      ['Melee Dmg:', this.stats.jav.Melee.Damage + this.stats.jav.All.Damage + '%'], ['', ''],
+      ['Combo Dmg:', this.stats.jav.Combo.Damage + this.stats.jav.All.Damage + '%'], ['Enemy Resist', this.resist + '%'],
+      ['Combo Imp Dmg:', this.stats.jav.Combo['Imp Dmg'] + this.stats.jav.All.Damage + '%'],
+      ['Force', this.stats.jav.Force['(blank)'] + '%'],
+      ['Ultimate Dmg:', this.stats.jav.Ultimate.Damage + this.stats.jav.All.Damage + '%'], ['', ''],
+      ['Weak Point Dmg:', this.stats.jav.Critical.Damage + this.stats.jav.All.Damage + '%'], ['', ''],
+      ['Blast Dmg:', this.stats.jav.Blast.Damage + this.stats.jav.All.Damage + '%'], ['', '']
+    ]);
 
-        this.weapStats = this.calcWeapStats(this.jav);
-        this.gearStats = this.calcGearStats(this.jav);
-        // console.log(this.weapStats);
-
-        this.shield = Math.round((this.db.baseValues[this.jav.class].shield + this.shield) * (100 + this.stats.jav.Shield.Max) / 100);
-        this.armor = Math.round((this.db.baseValues[this.jav.class].armor + this.armor) * (100 + this.stats.jav.Armor.Max) / 100);
-
-      }
-      // this.formatValues();
-      this.armorStats = [
-        ['Armor:', `${this.armor}`],
-        ['Armor Max:', this.stats.jav.Armor.Max + '%'],
-        ['Effect Duration', this.stats.jav.Effect.Duration + '%'],
-        ['Repair Drop Rate:', this.stats.jav.Repair['Drop Rate'] + '%'],
-        ['Effect Resist', this.stats.jav.Effect.Resist + '%'],
-        ['Repair Amount:', this.stats.jav.Repair.Amount + '%'],
-      ];
-
-      this.shieldStats = [
-        ['Shield:', `${this.shield}`],
-        ['Shield Max:', this.stats.jav.Shield.Max + '%'],
-        ['Shield Delay:', this.stats.jav.Shield.Delay + '%'],
-        ['Shield Refresh:', this.stats.jav.Shield.Refresh + '%']
-      ];
-
-      this.suppStats = [
-        ['Gear Score:', this.gearscore],
-        ['Luck:', this.stats.jav.Luck['(blank)'] + '%'],
-        ['Harvest Bonus:', this.stats.jav.Harvest.Bonus + '%'],
-        ['Pickup Radius:', this.stats.jav.Pickup.Radius + '%'],
-        ['Ammo Drop Rate:', this.stats.jav.Ammo['Drop Rate'] + '%'],
-        ['Ammo Pickup Amt:', this.stats.jav.Ammo['Pickup Amount'] + '%'],
-        ['Overheat Delay:', this.stats.jav.Overheat.Delay + '%'],
-        ['Oxygen:', this.stats.jav.Oxygen.Max + '%'],
-        ['Thruster Life:', this.stats.jav.Thruster.Life + '%'],
-        ['Thruster Speed:', this.stats.jav.Thruster.Speed + '%'],
-        ['Thruster Cooldown:', this.stats.jav.Thruster.Cooldown + '%'],
-      ];
-
-      this.dmgStats = this.calcMeleeStats(this.jav);
-      this.dmgStats = this.dmgStats.concat([
-        ['Kinetic Dmg:', this.stats.jav.Kinetic.Damage + this.stats.jav.Physical.Damage + this.stats.jav.All.Damage + '%'],
-        ['Kinetic Resist:', this.stats.jav.Kinetic.Resist + this.stats.jav.Physical.Resist + this.stats.jav.Damage.Resist + '%'],
-        ['Acid Dmg:', this.stats.jav.Acid.Damage + this.stats.jav.Physical.Damage + this.stats.jav.All.Damage + '%'],
-        ['Acid Resist:', this.stats.jav.Acid.Resist + this.stats.jav.Physical.Resist + this.stats.jav.Damage.Resist + '%'],
-        ['Elec Dmg:', this.stats.jav.Elec.Damage + this.stats.jav.Elemental.Damage + this.stats.jav.All.Damage + '%'],
-        ['Elec Resist:', this.stats.jav.Elec.Resist + this.stats.jav.Elemental.Resist + this.stats.jav.Damage.Resist + '%'],
-        ['Fire Dmg:', this.stats.jav.Fire.Damage + this.stats.jav.Elemental.Damage + this.stats.jav.All.Damage + '%'],
-        ['Fire Resist:', this.stats.jav.Fire.Resist + this.stats.jav.Elemental.Resist + this.stats.jav.Damage.Resist + '%'],
-        ['Ice Dmg:', this.stats.jav.Ice.Damage + this.stats.jav.Elemental.Damage + this.stats.jav.All.Damage + '%'],
-        ['Ice Resist:', this.stats.jav.Ice.Resist + this.stats.jav.Elemental.Resist + this.stats.jav.Damage.Resist + '%'],
-        ['Melee Dmg:', this.stats.jav.Melee.Damage + this.stats.jav.All.Damage + '%'], ['', ''],
-        ['Combo Dmg:', this.stats.jav.Combo.Damage + this.stats.jav.All.Damage + '%'], ['Enemy Resist', this.resist + '%'],
-        ['Combo Imp Dmg:', this.stats.jav.Combo['Imp Dmg'] + this.stats.jav.All.Damage + '%'],
-        ['Force', this.stats.jav.Force['(blank)'] + '%'],
-        ['Ultimate Dmg:', this.stats.jav.Ultimate.Damage + this.stats.jav.All.Damage + '%'], ['', ''],
-        ['Weak Point Dmg:', this.stats.jav.Critical.Damage + this.stats.jav.All.Damage + '%'], ['', ''],
-        ['Blast Dmg:', this.stats.jav.Blast.Damage + this.stats.jav.All.Damage + '%'], ['', '']
-      ]);
-
-    });
+  });
   */
-  }
+  // }
 
   /*
-  public initStats(): any {
-    const stats = {
-      jav: {},
-      weap: [{}, {}],
-      gear: [{}, {}],
-      comp: [{}, {}, {}, {}, {}, {}],
-      supp: [{}]
-    };
-    this.db.inscDb.forEach(i => {
-      this.initStat(stats.jav, i);
-      [0, 1].forEach(j => this.initStat(stats.weap[j], i));
-      [0, 1].forEach(j => this.initStat(stats.gear[j], i));
-      [0, 1, 2, 3, 4, 5].forEach(j => this.initStat(stats.comp[j], i));
-      this.initStat(stats.supp[0], i);
-    });
-    return stats;
-  }
-
-  private initStat(k, i) {
-    if (!(i.type in k)) { k[i.type] = {}; }
-    k[i.type][i.stat || ''] = 0;
-  }
-
-
-  private calcMeleeStats(jav: Javelin): any[] {
-    const wstats = [];
-    if (jav && 'class' in jav) {
-      const pwrMult = 2 ** ((Math.round(this.gearscore / 11) - 1) / 10);
-      const baseDmg = this.db.baseValues[jav.class].mdmg;
-      let dmgMod = this.stats.jav.All.Damage;
-      dmgMod += this.stats.jav[this.db.baseValues[jav.class].mstype].Damage;
-      dmgMod += this.stats.jav[this.db.baseValues[jav.class].mtype].Damage;
-      dmgMod += this.stats.jav.Melee.Damage;
-      dmgMod = pwrMult * (100 + dmgMod) - 100;
-      wstats.push([`Melee:`, `${Math.round(baseDmg * (100 + dmgMod) / 100 * (100 - this.resist) / 100)}`]);
-      // wstats.push([`Melee Mod:`, `${Math.round(dmgMod)}%`]);
-    }
-    return wstats;
-  }
 
   private calcWeapStats(jav: Javelin): any[] {
     const stats = [];
@@ -304,49 +209,8 @@ export class StatsComponent implements OnInit {
     return wstats;
   }
 
-  // read the inscriptions on items and aggregate them onto this.stats
-  private parseItemInscriptions(jav: Javelin) {
-    ['weap', 'gear', 'comp', 'supp', 'sigils'].forEach(type => {
-      for (let idx = 0; idx < jav[type].length; idx++) {
-        if (jav[type][idx] == null) { continue; }
-        const item = jav[type][idx];
+  //  this.aGS = Math.max(1, Math.round(this.gearscore) / 11);
 
-        // gearscore
-        this.gearscore += item.power || 0;
-        this.armor += item.armor || 0;
-        this.shield += item.shield || 0;
-
-        // inscriptions
-        item.inscs.forEach((insc: Inscription) => {
-          if (insc.scope) {
-            this.updateStat(this.stats.jav, insc);
-          } else {
-            this.updateStat(this.stats[type][idx], insc);
-          }
-        });
-
-        // buffs
-        if (item.buff && item.bactive) {
-          item.buffDetails.forEach(b => {
-            if (b.scope) {
-              this.updateStat(this.stats.jav, b);
-            } else {
-              this.updateStat(this.stats[type][idx], b);
-            }
-          });
-        }
-      }
-    });
-    this.aGS = Math.max(1, Math.round(this.gearscore) / 11);
-  }
-
-  // parse inscription and aggregate onto a stat
-  private updateStat(stat, insc) {
-    if (stat) {
-      if (!(insc.type in stat)) { stat[insc.type] = {}; }
-      stat[insc.type][insc.stat || ''] = (stat[insc.type][insc.stat || ''] || 0) + insc.value;
-    }
-  }
   */
 
   changeName(evt: any) {

@@ -11,6 +11,7 @@ import { Stats } from './classes/stats';
 import { Javelins, Javelin } from './classes/javelin.js';
 import { ItemService } from './services/item.service';
 import { JavelinService } from './services/javelin.service';
+import { StatService } from './services/stat.service';
 import { take } from 'rxjs/operators';
 import {
     InitStore,
@@ -91,7 +92,8 @@ export class JavState {
 
     constructor(
         private itemService: ItemService,
-        private javelinService: JavelinService
+        private javelinService: JavelinService,
+        private statService: StatService
     ) { }
 
     @Selector()
@@ -122,18 +124,24 @@ export class JavState {
 
     @Action(SelJav)
     SelJav(ctx: StateContext<JavStateModel>, action: SelJav) {
+        const state = JSON.parse(JSON.stringify(ctx.getState()));
+        const javStats = this.statService.calcJavStats(state, action.javClass, action.javSlot);
+        state.stats[action.javClass][action.javSlot] = javStats;
         ctx.patchState({
             selected: {
                 javClass: action.javClass,
                 javSlot: action.javSlot
             }
         });
+        ctx.patchState({ stats: state.stats });
     }
 
     @Action(SetJavItem)
     SetJavItem(ctx: StateContext<JavStateModel>, action: SetJavItem) {
         const state = JSON.parse(JSON.stringify(ctx.getState()));
         state.javelins[state.selected.javClass][state.selected.javSlot][action.type][action.slot] = action.item;
+        const javStats = this.statService.calcJavStats(state, state.selected.javClass, state.selected.javSlot);
+        state.stats[state.selected.javClass][state.selected.javSlot] = javStats;
         ctx.setState(state);
         this.javelinService.save(state.javelins);
     }
@@ -198,6 +206,7 @@ export class JavState {
                     localStorage.setItem('items', JSON.stringify(items));
                 }
             });
-
     }
+
+
 }
