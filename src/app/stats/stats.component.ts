@@ -117,7 +117,8 @@ export class StatsComponent implements OnInit {
         ['Combo Dmg:', this.stats.jav.Combo.Damage + this.stats.jav.All.Damage + '%'], ['Enemy Resist', this.resist + '%'],
         ['Combo Imp Dmg:', this.stats.jav.Combo['Imp Dmg'] + this.stats.jav.All.Damage + '%'],
         ['Force', this.stats.jav.Force['(blank)'] + '%'],
-        ['Ultimate Dmg:', this.stats.jav.Ultimate.Damage + this.stats.jav.All.Damage + '%'], ['', ''],
+        ['Ultimate Dmg:', this.stats.jav.Ultimate.Damage + this.stats.jav.All.Damage + '%'],
+        ['Ultimate Speed:', this.stats.jav.Ultimate.Speed + '%'],
         ['Weak Point Dmg:', this.stats.jav.Critical.Damage + this.stats.jav.All.Damage + '%'], ['', ''],
         ['Blast Dmg:', this.stats.jav.Blast.Damage + this.stats.jav.All.Damage + '%'], ['', '']
       ]);
